@@ -1,0 +1,87 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+        applicationId "com.example.exercisendk"
+        minSdkVersion 23
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++14"
+            }
+        }
+    }
+
+    defaultConfig {
+        ndk {
+            //设置支持的SO库架构
+            abiFilters 'armeabi-v7a'
+            //可以根据需要来自行选择并添加对应cpu类型的.so库。
+//            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+            //还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+        }
+        manifestPlaceholders = [
+                PACKAGE_NAME: applicationId,
+//                XG_ACCESS_ID : "1500015245",
+//                XG_ACCESS_KEY: "AI6GCG2UNXVJ",
+        ]
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            minifyEnabled false //这是关键的，我的问题就是出在这里
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/cpp/libs']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.huawei.hms:scanplus:1.3.2.300'
+    //动态审请权限库
+    implementation 'com.qw:soulpermission:1.2.2_x'
+//    implementation 'com.chuoli.tech.testlib.TestLib:1.0.0'
+//    implementation 'com.chuoli.tech.testlib.TestLib:1.0.0'
+    implementation project(':CommonModleLib')
+//    implementation 'com.me.support:common:1.0.0'
+
+//    implementation 'com.me.gaodelibrary:common:1.0.0'
+//    implementation 'com.me.infinitecycleviewpager:common:1.0.0'
+//    implementation 'com.me.lottie:common:1.0.0'
+//    implementation 'com.me.lottiealertdialoglibrary:common:1.0.0'
+//    implementation 'com.me.motiontoast:common:1.0.0'
+//    implementation 'com.me.ScanLib:common:1.0.0'
+//    implementation 'com.me.baselibrary:common:1.0.0'
+}
