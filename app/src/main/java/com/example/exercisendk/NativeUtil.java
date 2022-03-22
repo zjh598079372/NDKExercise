@@ -23,5 +23,9 @@ public class NativeUtil {
 
     public static native String getAppPackgeName(Context context);
 
-    public static native Bitmap generateGrayBitmap(Bitmap bimap);
+    public static native void generateGrayBitmap(Bitmap bimap);
+
+    public static native Bitmap againstWorld(Bitmap bitmap);
+
+    public static native Bitmap mirrorImage(Bitmap bitmap);
 }

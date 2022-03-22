@@ -37,12 +37,15 @@ public class SecondActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
         bigImageView = findViewById(R.id.bigImageView);
+        final Bitmap src_bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.arrow);
+//        ((ImageView)findViewById(R.id.image)).setImageBitmap(src_bitmap);
         findViewById(R.id.tv_click).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((TextView)findViewById(R.id.tv_intercept)).setText(NativeUtil.decrypt("123"));
-                Bitmap src_bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon_comfort_level);
-                ((ImageView)findViewById(R.id.image)).setImageBitmap(NativeUtil.generateGrayBitmap(src_bitmap));
+//                NativeUtil.generateGrayBitmap(src_bitmap);
+//                ((ImageView)findViewById(R.id.image)).setImageBitmap(src_bitmap);
+//                ((ImageView)findViewById(R.id.image)).setImageBitmap(NativeUtil.againstWorld(src_bitmap));
+                ((ImageView)findViewById(R.id.image)).setImageBitmap(NativeUtil.mirrorImage(src_bitmap));
             }
         });
 
