@@ -38,14 +38,16 @@ public class SecondActivity extends BaseActivity {
         setContentView(R.layout.activity_second);
         bigImageView = findViewById(R.id.bigImageView);
         final Bitmap src_bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.arrow);
-//        ((ImageView)findViewById(R.id.image)).setImageBitmap(src_bitmap);
+//        Bitmap.createBitmap()
+        ((ImageView)findViewById(R.id.image)).setImageBitmap(src_bitmap);
         findViewById(R.id.tv_click).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                NativeUtil.generateGrayBitmap(src_bitmap);
 //                ((ImageView)findViewById(R.id.image)).setImageBitmap(src_bitmap);
 //                ((ImageView)findViewById(R.id.image)).setImageBitmap(NativeUtil.againstWorld(src_bitmap));
-                ((ImageView)findViewById(R.id.image)).setImageBitmap(NativeUtil.mirrorImage(src_bitmap));
+                Bitmap newBitmap = NativeUtil.mirrorImage(src_bitmap);
+                ((ImageView)findViewById(R.id.image)).setImageBitmap(newBitmap);
             }
         });
 

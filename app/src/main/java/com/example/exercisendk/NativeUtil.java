@@ -28,4 +28,8 @@ public class NativeUtil {
     public static native Bitmap againstWorld(Bitmap bitmap);
 
     public static native Bitmap mirrorImage(Bitmap bitmap);
+
+    public static native Bitmap  createBitmap(int[] colors, int width, int height, Bitmap.Config config);
+
+    private Bitmap.Config ARGB_8888;
 }
