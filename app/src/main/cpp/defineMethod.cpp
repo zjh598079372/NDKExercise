@@ -9,6 +9,8 @@
 #include <opencv2/imgproc.hpp>
 #include <android/log.h>
 #include <opencv2/highgui.hpp>
+#include "bitmap/BitmapHelper.h"
+#include <math.h>
 
 
 using namespace cv;
@@ -99,16 +101,25 @@ jstring getAppPackgeName(JNIEnv *env, jobject thiz, jobject context) {
 };
 
 extern "C"
-void generateGrayBitmap(JNIEnv *env, jobject thiz, jobject bitmap) {
+jobject generateGrayBitmap(JNIEnv *env, jobject thiz, jobject bitmap,jint type) {
 
     Mat mat;
     bitmap2Mat(env, bitmap, mat);
     Mat gray;
-    cvtColor(mat, gray, COLOR_BGRA2GRAY);
-//    GaussianBlur(mat,gray,Size(15,15),0);
+    if(type == 0){
+        cvtColor(mat, gray, COLOR_BGRA2GRAY);
+    }else if(type == 1){
+        GaussianBlur(mat,gray,Size(9,9),0);
+    }else if(type == 2){
+//        bilateralFilter(mat,gray,3,10,100);
+        medianBlur(mat,gray,15);
+    }
+
+//
 //    blur(mat,gray,Size(15,15));
     mat2bitmap(env, gray, bitmap);
 
+    return bitmap;
 };
 
 /**
@@ -157,17 +168,8 @@ jobject mirrorImage(JNIEnv *env, jobject thiz, jobject bitmap) {
     int src_height = info.height;
     int src_width = info.width;
     int newWidth = src_width << 1;
-    //创建一个新的bitmap
-    const char *class_name = "android/graphics/Bitmap";
-    const char *sign_method = "([IIILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;";
-    const char *config_name = "android/graphics/Bitmap$Config";
-    jclass config_class = env->FindClass(config_name);
-    jfieldID ARGB_8888 = env->GetStaticFieldID(config_class, "ARGB_8888",
-                                               "Landroid/graphics/Bitmap$Config;");
-    jobject ARGB_8888_object = env->GetStaticObjectField(config_class, ARGB_8888);
-    jclass clazz = env->FindClass(class_name);
-    jmethodID methodID = env->GetStaticMethodID(clazz, "createBitmap", sign_method);
-    jintArray dataArr = env->NewIntArray(newWidth * src_height);
+
+    uint32_t* new_data_arr = new uint32_t[newWidth*src_height];
     int index = 0;
     for (int row = 0; row < src_height; ++row) {
 
@@ -176,15 +178,103 @@ jobject mirrorImage(JNIEnv *env, jobject thiz, jobject bitmap) {
             if (col > src_width) {
                 tempCol = newWidth - col;
             }
-            int* value = &pixels[tempCol];
-            env->SetIntArrayRegion(dataArr, index++, 1,value);
+            new_data_arr[index++] = pixels[tempCol];
 
         }
         pixels = pixels +src_width;
     }
+    jobject  new_bitmap = BitmapHelper::createBitmap(env,newWidth,src_height);
+    uint32_t* result;
+    AndroidBitmap_lockPixels(env,new_bitmap,(void**)&result);
+    AndroidBitmap_unlockPixels(env,new_bitmap);
+    memcpy(result,new_data_arr,sizeof(uint32_t)*newWidth*src_height);
 
-    jobject bitmap_object = env->CallStaticObjectMethod(clazz, methodID, dataArr, newWidth,
-                                                        src_height, ARGB_8888_object);
+    if(new_data_arr){
+        delete new_data_arr;
+    }
     AndroidBitmap_unlockPixels(env,bitmap);
-    return bitmap_object;
+    return new_bitmap;
 };
+
+extern "C"
+jobject rotationImage(JNIEnv* env,jobject thiz, jobject bitmap){
+    AndroidBitmapInfo info;
+    AndroidBitmap_getInfo(env,bitmap,&info);
+    uint32_t* addrptr;
+    AndroidBitmap_lockPixels(env,bitmap,(void**) &addrptr);
+    int width = info.width;
+    int new_height = width;
+    int height = info.height;
+    int new_width = height;
+
+    uint32_t* transforArr = new uint32_t [new_width*new_height];
+    int index = 0;
+    for(int row =0; row <width; row++){
+        for(int col =height-1; col >= 0; col--){
+
+             int temp_index = col*width+row;
+            transforArr[index++] = addrptr[temp_index];
+        }
+    }
+
+    jobject  new_bitmap = BitmapHelper::createBitmap(env,new_width,new_height);
+    uint32_t* new_ptr;
+    AndroidBitmap_lockPixels(env,new_bitmap,(void **)&new_ptr);
+    AndroidBitmap_unlockPixels(env,new_bitmap);
+    memcpy(new_ptr,transforArr,sizeof(uint32_t)* width*height);
+
+    AndroidBitmap_unlockPixels(env,bitmap);
+    if(transforArr){
+        delete transforArr;
+    }
+    return new_bitmap;
+}
+
+extern "C"
+jobject reflectionImage(JNIEnv* env,jobject thiz,jobject bitmap){
+    AndroidBitmapInfo info;
+    AndroidBitmap_getInfo(env,bitmap,&info);
+    uint32_t* addrptr;
+    AndroidBitmap_lockPixels(env,bitmap,(void **)&addrptr);
+    int width = info.width;
+    int height = info.height;
+    int half_height = (height >> 1);
+    int new_width = width;
+    int new_height = height +half_height;
+    jobject  new_bitmap = BitmapHelper::createBitmap(env,new_width,new_height);
+    uint32_t* new_addrptr;
+    AndroidBitmap_lockPixels(env,new_bitmap,(void**)&new_addrptr);
+    AndroidBitmap_unlockPixels(env,new_bitmap);
+    uint32_t* new_arr = new uint32_t [new_width*new_height];
+    int index = 0;
+    int origin_total = width*height -1;
+    for(int row =0; row < new_height ; row++){
+        for(int col = 0; col <new_width; col++){
+            int temp_index = index;
+            uint32_t value = addrptr[temp_index];
+            if(row >= height){
+                temp_index = origin_total -(row -height)*width +col;
+                value = addrptr[temp_index];
+                uint32_t a = (float)0xff * (1-(row -height)/((float)half_height));
+                __android_log_print(ANDROID_LOG_ERROR, "Mat", "a ==%d", a);
+                uint32_t r = (value >> 16 ) & 0xff;
+                uint32_t g = (value >> 8 ) & 0xff;
+                uint32_t b = value & 0xff;
+
+                value = (a << 24) | (r << 16) | (g<< 8) | b;
+            }
+
+            new_addrptr[index ++] = value;
+        }
+    }
+
+
+    memcpy(new_arr,new_addrptr,sizeof(uint32_t)*new_width*new_height);
+    if(new_arr){
+        delete new_arr;
+    }
+
+    AndroidBitmap_unlockPixels(env,bitmap);
+    return new_bitmap;
+
+}

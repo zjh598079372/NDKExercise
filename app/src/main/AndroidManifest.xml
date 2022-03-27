@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ShowImageActivity"></activity>
+        <activity android:name=".ImageTransformationActivity"></activity>
+        <activity android:name=".ShowBigImageActivity" />
+        <activity android:name=".ShowImageActivity" />
         <activity android:name=".BitmapActivity" />
 
         <meta-data

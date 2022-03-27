@@ -157,8 +157,10 @@ public class BigImageView extends View implements GestureDetector.OnGestureListe
         }
         Bitmap bitmap = decoder.decodeRegion(rect, options);
         Matrix matrix = new Matrix();
-        matrix.setScale(widthScale * heightScale, widthScale * heightScale);
+//        matrix.setScale(widthScale * heightScale, widthScale * heightScale);
+        matrix.setScale(widthScale, heightScale);
         if (bitmap != null) {
+            Log.i(TAG, "drawBitmap--163");
             canvas.drawBitmap(bitmap, matrix, null);
         }
     }

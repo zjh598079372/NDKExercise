@@ -17,9 +17,11 @@ static JNINativeMethod gMethods[] = {
         {"encrypt", "(Ljava/lang/String;)Ljava/lang/String;", (void *) encrypt},
         {"decrypt", "(Ljava/lang/String;)Ljava/lang/String;", (void *) decrypt},
         {"getAppPackgeName", "(Landroid/content/Context;)Ljava/lang/String;", (void *) getAppPackgeName},
-        {"generateGrayBitmap", "(Landroid/graphics/Bitmap;)V", (void *) generateGrayBitmap},
+        {"generateGrayBitmap", "(Landroid/graphics/Bitmap;I)Landroid/graphics/Bitmap;", (void *) generateGrayBitmap},
         {"againstWorld", "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;", (void *) againstWorld},
-        {"mirrorImage", "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;", (void *) mirrorImage}
+        {"mirrorImage", "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;", (void *) mirrorImage},
+        {"rotationImage", "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;", (void *) rotationImage},
+        {"reflectionImage", "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;", (void *) reflectionImage}
 };
 
 /*

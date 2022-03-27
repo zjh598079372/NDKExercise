@@ -36,6 +36,8 @@ add_library( # Sets the name of the library.
              defineMethod.h
              nativeRegister.cpp
              nativeRegister.h
+             bitmap/BitmapHelper.h
+             bitmap/BitmapHelper.cpp
         )
 
 # Searches for a specified prebuilt library and stores the path as a

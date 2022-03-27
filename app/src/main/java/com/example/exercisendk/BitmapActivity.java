@@ -3,6 +3,7 @@ package com.example.exercisendk;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -22,12 +23,14 @@ public class BitmapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bitmap);
         container_ll = findViewById(R.id.container_ll);
-        addBtn(container_ll);
+        addBtn(container_ll,"图片涂鸦");
+        addBtn(container_ll,"大图显示");
+        addBtn(container_ll,"图形变换");
     }
 
-    private void addBtn(LinearLayout container_ll) {
+    private void addBtn(LinearLayout container_ll, final String textStr) {
         TextView handWritting = new TextView(BitmapActivity.this);
-        handWritting.setText("图片涂鸦");
+        handWritting.setText(textStr);
         handWritting.setTextSize(TypedValue.COMPLEX_UNIT_SP,22);
         handWritting.setTextColor(Color.BLACK);
         handWritting.setGravity(Gravity.CENTER);
@@ -35,7 +38,14 @@ public class BitmapActivity extends AppCompatActivity {
         handWritting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(BitmapActivity.this,ShowImageActivity.class));
+                if(textStr.equals("图片涂鸦")){
+                    startActivity(new Intent(BitmapActivity.this,ShowImageActivity.class));
+                }else if(textStr.equals("大图显示")){
+                    startActivity(new Intent(BitmapActivity.this,ShowBigImageActivity.class));
+                }else if(textStr.equals("图形变换")){
+                    startActivity(new Intent(BitmapActivity.this,ImageTransformationActivity.class));
+                }
+
             }
         });
         int padding = (int) (getWindowManager().getDefaultDisplay().getWidth()*0.04f);

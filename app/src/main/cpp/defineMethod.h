@@ -17,13 +17,19 @@ extern "C"
 jstring getAppPackgeName(JNIEnv* env,jobject thiz,jobject context);
 
 extern "C"
-void generateGrayBitmap(JNIEnv* env,jobject thiz,jobject bitmap);
+jobject generateGrayBitmap(JNIEnv* env,jobject thiz,jobject bitmap,jint type);
 
 extern "C"
 jobject againstWorld(JNIEnv* env,jobject thiz, jobject bitmap);
 
 extern "C"
 jobject mirrorImage(JNIEnv* env,jobject thiz, jobject bitmap);
+
+extern "C"
+jobject rotationImage(JNIEnv* env,jobject thiz, jobject bitmap);
+
+extern "C"
+jobject reflectionImage(JNIEnv* env,jobject thiz, jobject bitmap);
 
 class defineMethod{
 

@@ -23,13 +23,19 @@ public class NativeUtil {
 
     public static native String getAppPackgeName(Context context);
 
-    public static native void generateGrayBitmap(Bitmap bimap);
+    public static native Bitmap generateGrayBitmap(Bitmap bimap,int type);
 
     public static native Bitmap againstWorld(Bitmap bitmap);
 
     public static native Bitmap mirrorImage(Bitmap bitmap);
 
+    public static native Bitmap rotationImage(Bitmap bitmap);
+
+    public static native Bitmap reflectionImage(Bitmap bitmap);
+
     public static native Bitmap  createBitmap(int[] colors, int width, int height, Bitmap.Config config);
 
-    private Bitmap.Config ARGB_8888;
+    public static final int TYPE_GRAY = 0; //灰度
+    public static final int TYPE_GUASI = 1; //高斯
+    public static final int TYPE_BILA = 2;  //双边滤波
 }
