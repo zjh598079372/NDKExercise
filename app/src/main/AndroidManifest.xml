@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name="com.me.support.app.BaseApplication"
@@ -14,7 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ImageTransformationActivity"></activity>
+        <activity android:name=".VideoActivity"></activity>
+        <activity android:name=".TestETActivity" />
+        <activity android:name=".ImageTransformationActivity" />
         <activity android:name=".ShowBigImageActivity" />
         <activity android:name=".ShowImageActivity" />
         <activity android:name=".BitmapActivity" />

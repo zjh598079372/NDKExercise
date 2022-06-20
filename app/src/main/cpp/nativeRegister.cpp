@@ -14,22 +14,22 @@
 * Table of methods associated with a single class.
 */
 static JNINativeMethod gMethods[] = {
-        {"encrypt", "(Ljava/lang/String;)Ljava/lang/String;", (void *) encrypt},
-        {"decrypt", "(Ljava/lang/String;)Ljava/lang/String;", (void *) decrypt},
-        {"getAppPackgeName", "(Landroid/content/Context;)Ljava/lang/String;", (void *) getAppPackgeName},
+        {"encrypt",            "(Ljava/lang/String;)Ljava/lang/String;",                (void *) encrypt},
+        {"decrypt",            "(Ljava/lang/String;)Ljava/lang/String;",                (void *) decrypt},
+        {"getAppPackgeName",   "(Landroid/content/Context;)Ljava/lang/String;",         (void *) getAppPackgeName},
         {"generateGrayBitmap", "(Landroid/graphics/Bitmap;I)Landroid/graphics/Bitmap;", (void *) generateGrayBitmap},
-        {"againstWorld", "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;", (void *) againstWorld},
-        {"mirrorImage", "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;", (void *) mirrorImage},
-        {"rotationImage", "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;", (void *) rotationImage},
-        {"reflectionImage", "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;", (void *) reflectionImage}
+        {"againstWorld",       "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;",  (void *) againstWorld},
+        {"mirrorImage",        "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;",  (void *) mirrorImage},
+        {"rotationImage",      "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;",  (void *) rotationImage},
+        {"reflectionImage",    "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;",  (void *) reflectionImage},
+        {"play",               "(Ljava/lang/String;)Ljava/lang/String;",                (void *) play}
 };
 
 /*
 * Register several native methods for one class.
 */
-static int registerNativeMethods(JNIEnv* env, const char* className,
-                                 JNINativeMethod* gMethods, int numMethods)
-{
+static int registerNativeMethods(JNIEnv *env, const char *className,
+                                 JNINativeMethod *gMethods, int numMethods) {
     jclass clazz;
     clazz = env->FindClass(className);
     if (clazz == NULL) {
@@ -46,8 +46,7 @@ static int registerNativeMethods(JNIEnv* env, const char* className,
 /*
 * Register native methods for all classes we know about.
 */
-static int registerNatives(JNIEnv* env)
-{
+static int registerNatives(JNIEnv *env) {
     if (!registerNativeMethods(env, JNIREG_CLASS, gMethods,
                                sizeof(gMethods) / sizeof(gMethods[0])))
         return JNI_FALSE;
@@ -60,12 +59,11 @@ static int registerNatives(JNIEnv* env)
 *
 * Returns the JNI version on success, -1 on failure.
 */
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
-{
-    JNIEnv* env = NULL;
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
+    JNIEnv *env = NULL;
     jint result = -1;
 
-    if (vm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
+    if (vm->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
         return -1;
     }
     assert(env != NULL);

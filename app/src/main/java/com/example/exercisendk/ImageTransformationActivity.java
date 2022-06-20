@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.me.support.recyclerView.CommonRecyclerViewAdapter;
 import com.me.support.recyclerView.MyViewHolder;
+import com.me.support.utils.BitmapUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class ImageTransformationActivity extends AppCompatActivity {
         dataList.add("镜像");
         dataList.add("旋转");
         dataList.add("倒影");
+        dataList.add("加水印");
         recyclerView.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
         recyclerView.setAdapter(new CommonRecyclerViewAdapter<String>(dataList, R.layout.item_image_transformation) {
             @Override
@@ -68,6 +70,10 @@ public class ImageTransformationActivity extends AppCompatActivity {
                         }else if(data.equals("倒影")){
                             options.inMutable = true;
                             showIV.setImageBitmap(NativeUtil.reflectionImage(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options)));
+                        }else if(data.equals("加水印")){
+                            Bitmap dog = BitmapFactory.decodeResource(getResources(),R.drawable.zhuye,options);
+                            Bitmap waterDog = BitmapUtils.addTimeWatermark(dog,100);
+                            showIV.setImageBitmap(waterDog);
                         }
 
                     }

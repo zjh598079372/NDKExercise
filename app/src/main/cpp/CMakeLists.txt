@@ -5,12 +5,39 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
+set(FF ${CMAKE_SOURCE_DIR}/libs/armeabi-v7a)
+
 #配置加载头文件
 include_directories(include)
+include_directories(include/ffmpeg)
 #动态方式加载
 add_library(opencv SHARED IMPORTED)
 #引入第三方.so库
-set_target_properties(opencv PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libopencv_java3.so)
+set_target_properties(opencv PROPERTIES IMPORTED_LOCATION ${FF}/libopencv_java3.so)
+
+add_library(avcodec SHARED IMPORTED)
+set_target_properties(avcodec PROPERTIES IMPORTED_LOCATION ${FF}/libavcodec-57.so)
+
+add_library(avdevice SHARED IMPORTED)
+set_target_properties(avdevice PROPERTIES IMPORTED_LOCATION ${FF}/libavdevice-57.so)
+
+add_library(avfilter SHARED IMPORTED)
+set_target_properties(avfilter PROPERTIES IMPORTED_LOCATION ${FF}/libavfilter-6.so)
+
+add_library(avformat SHARED IMPORTED)
+set_target_properties(avformat PROPERTIES IMPORTED_LOCATION ${FF}/libavformat-57.so)
+
+add_library(avutil SHARED IMPORTED)
+set_target_properties(avutil PROPERTIES IMPORTED_LOCATION ${FF}/libavutil-55.so)
+
+add_library(postproc SHARED IMPORTED)
+set_target_properties(postproc PROPERTIES IMPORTED_LOCATION ${FF}/libpostproc-54.so)
+
+add_library(swresample SHARED IMPORTED)
+set_target_properties(swresample PROPERTIES IMPORTED_LOCATION ${FF}/libswresample-2.so)
+
+add_library(swscale SHARED IMPORTED)
+set_target_properties(swscale PROPERTIES IMPORTED_LOCATION ${FF}/libswscale-4.so)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -18,26 +45,26 @@ set_target_properties(opencv PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/li
 # Gradle automatically packages shared libraries with your APK.
 
 add_library( # Sets the name of the library.
-             native-lib
+        native-lib
 
-             # Sets the library as a shared library.
-             SHARED
+        # Sets the library as a shared library.
+        SHARED
 
-             # Provides a relative path to your source file(s).
-             native-lib.cpp
-             include/Person.h
-             include/Student.h
-             Array.hpp
-             LinkedList.hpp
-             Params.cpp
-             priorityQueue.hpp
-             BST.hpp
-             defineMethod.cpp
-             defineMethod.h
-             nativeRegister.cpp
-             nativeRegister.h
-             bitmap/BitmapHelper.h
-             bitmap/BitmapHelper.cpp
+        # Provides a relative path to your source file(s).
+        native-lib.cpp
+        include/Person.h
+        include/Student.h
+        Array.hpp
+        LinkedList.hpp
+        Params.cpp
+        priorityQueue.hpp
+        BST.hpp
+        defineMethod.cpp
+        defineMethod.h
+        nativeRegister.cpp
+        nativeRegister.h
+        bitmap/BitmapHelper.h
+        bitmap/BitmapHelper.cpp
         )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -47,21 +74,30 @@ add_library( # Sets the name of the library.
 # completing its build.
 
 find_library( # Sets the name of the path variable.
-              log-lib
+        log-lib
 
-              # Specifies the name of the NDK library that
-              # you want CMake to locate.
-              log )
+        # Specifies the name of the NDK library that
+        # you want CMake to locate.
+        log)
 
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
-target_link_libraries( # Specifies the target library.
-                       native-lib
-                       opencv
-                        jnigraphics
+target_link_libraries(
+        native-lib
+        opencv
+        jnigraphics
+        avcodec
+        avdevice
+        avfilter
+        avformat
+        avutil
+        postproc
+        swresample
+        swscale
 
-                       # Links the target library to the log library
-                       # included in the NDK.
-                       ${log-lib} )
+
+        # Links the target library to the log library
+        # included in the NDK.
+        ${log-lib})

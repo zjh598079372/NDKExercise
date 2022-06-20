@@ -31,6 +31,9 @@ jobject rotationImage(JNIEnv* env,jobject thiz, jobject bitmap);
 extern "C"
 jobject reflectionImage(JNIEnv* env,jobject thiz, jobject bitmap);
 
+extern "C"
+JNIEXPORT jstring JNICALL play(JNIEnv *env, jobject thiz, jstring filePath);
+
 class defineMethod{
 
 };

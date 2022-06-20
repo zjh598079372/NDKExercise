@@ -38,4 +38,10 @@ public class NativeUtil {
     public static final int TYPE_GRAY = 0; //灰度
     public static final int TYPE_GUASI = 1; //高斯
     public static final int TYPE_BILA = 2;  //双边滤波
+
+
+    /**
+     * 视频播放方法
+     */
+    public static native String play(String filePath);
 }

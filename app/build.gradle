@@ -85,4 +85,8 @@ dependencies {
 //    implementation 'com.me.motiontoast:common:1.0.0'
 //    implementation 'com.me.ScanLib:common:1.0.0'
 //    implementation 'com.me.baselibrary:common:1.0.0'
+
+    //git push https://github.com/zjh598079372/NDKExercise.git master
+
+    //push token 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
 }

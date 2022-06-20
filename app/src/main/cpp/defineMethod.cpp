@@ -11,6 +11,15 @@
 #include <opencv2/highgui.hpp>
 #include "bitmap/BitmapHelper.h"
 #include <math.h>
+#include "XLog.h"
+extern "C"{
+#include <ffmpeg/libavformat/avformat.h>
+};
+
+/**
+ * ffmpeg
+ */
+AVFormatContext* avFormatContext = NULL;
 
 
 using namespace cv;
@@ -251,17 +260,19 @@ jobject reflectionImage(JNIEnv* env,jobject thiz,jobject bitmap){
     for(int row =0; row < new_height ; row++){
         for(int col = 0; col <new_width; col++){
             int temp_index = index;
-            uint32_t value = addrptr[temp_index];
+            uint32_t value = 0;
             if(row >= height){
                 temp_index = origin_total -(row -height)*width +col;
                 value = addrptr[temp_index];
-                uint32_t a = (float)0xff * (1-(row -height)/((float)half_height));
-                __android_log_print(ANDROID_LOG_ERROR, "Mat", "a ==%d", a);
-                uint32_t r = (value >> 16 ) & 0xff;
-                uint32_t g = (value >> 8 ) & 0xff;
-                uint32_t b = value & 0xff;
-
-                value = (a << 24) | (r << 16) | (g<< 8) | b;
+//                uint32_t a = (float)0xff * (1-(row -height)/((float)half_height));
+//                __android_log_print(ANDROID_LOG_ERROR, "Mat", "a ==%d", a);
+//                uint32_t r = (value >> 16 ) & 0xff;
+//                uint32_t g = (value >> 8 ) & 0xff;
+//                uint32_t b = value & 0xff;
+//
+//                value = (a << 24) | (r << 16) | (g<< 8) | b;
+            }else{
+                value = addrptr[temp_index];
             }
 
             new_addrptr[index ++] = value;
@@ -277,4 +288,17 @@ jobject reflectionImage(JNIEnv* env,jobject thiz,jobject bitmap){
     AndroidBitmap_unlockPixels(env,bitmap);
     return new_bitmap;
 
+}
+
+
+extern "C"
+jstring play(JNIEnv* env,jobject thiz,jstring filePath){
+    av_register_all();
+    avformat_network_init();
+    const char* url = env->GetStringUTFChars(filePath, 0);
+    int result = avformat_open_input(&avFormatContext,url,NULL,NULL);
+    XLOGE("result-->value-->%d",result);
+    strerror(result);
+    std::string hello = "HelloWorld";
+    return env->NewStringUTF(hello.c_str());
 }
