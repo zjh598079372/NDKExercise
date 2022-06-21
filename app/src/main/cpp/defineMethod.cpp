@@ -176,15 +176,22 @@ jobject mirrorImage(JNIEnv *env, jobject thiz, jobject bitmap) {
             if (col > src_width) {
                 tempCol = newWidth - col;
             }
-            int* value = &pixels[tempCol];
-            env->SetIntArrayRegion(dataArr, index++, 1,value);
+            int *value = &pixels[tempCol];
+            env->SetIntArrayRegion(dataArr, index++, 1, value);
 
         }
-        pixels = pixels +src_width;
+        pixels = pixels + src_width;
     }
 
     jobject bitmap_object = env->CallStaticObjectMethod(clazz, methodID, dataArr, newWidth,
                                                         src_height, ARGB_8888_object);
-    AndroidBitmap_unlockPixels(env,bitmap);
+    jclass callbackClass = env->FindClass("com/example/exercisendk/callNative/NativeCallback");
+    jmethodID methodId = env->GetMethodID(callbackClass, "JNICallback", "(ILjava/lang/String;)V");
+    char *error = "网络出错";
+    jmethodID methodId1 = env->GetMethodID(callbackClass, "<init>", "()V");
+    jobject object = env->NewObject(callbackClass,methodId1);
+    jstring errorStr = env->NewStringUTF(error);
+    env->CallVoidMethod(object, methodId, 1, errorStr);
+    AndroidBitmap_unlockPixels(env, bitmap);
     return bitmap_object;
 };

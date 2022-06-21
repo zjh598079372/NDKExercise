@@ -35,7 +35,8 @@ public class BitmapActivity extends AppCompatActivity {
         handWritting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(BitmapActivity.this,ShowImageActivity.class));
+                startActivityForResult(new Intent(BitmapActivity.this,ShowImageActivity.class),200);
+
             }
         });
         int padding = (int) (getWindowManager().getDefaultDisplay().getWidth()*0.04f);
