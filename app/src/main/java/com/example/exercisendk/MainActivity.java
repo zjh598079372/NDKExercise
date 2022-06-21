@@ -17,6 +17,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.MessageQueue;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -69,6 +71,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -168,7 +171,8 @@ public class MainActivity extends AppCompatActivity {
         show_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,BitmapActivity.class));
+//                startActivityForResult(new Intent(MainActivity.this,BitmapActivity.class),200);
+                startActivityForResult(new Intent(MainActivity.this,SecondActivity.class),200);
             }
         });
 
@@ -276,9 +280,50 @@ public class MainActivity extends AppCompatActivity {
 //                copyOnWriteArrayList.add(13);
 
 //                LogUtil.e("number-->"+arrayList.size());
-                startActivity(new Intent(MainActivity.this,SecondActivity.class));
+//                startActivity(new Intent(MainActivity.this,SecondActivity.class));
+                HashSet<String> hashSet = new HashSet<>();
+                hashSet.add("01");
+                hashSet.add("01");
+                hashSet.add(null);
+                Iterator iterator = hashSet.iterator();
+//                while (iterator.hasNext()){
+//                    String key = (String) iterator.next();
+//                    LogUtil.e("hashSet--iterator-->"+key);
+//                }
 
-            }
+                for (String str :hashSet){
+                    LogUtil.e("hashSet--iterator-->"+str);
+                }
+
+
+
+
+
+//                HashMap<String,Object> hashMap = new HashMap<>();
+//                hashMap.put("01","第一");
+//                hashMap.put("01","second");
+//                hashMap.put(null,null);
+//                Set<String> set = hashMap.keySet();
+//                Iterator iterator = set.iterator();
+//                while (iterator.hasNext()){
+//                    String key = (String) iterator.next();
+//                    LogUtil.e("hashSet--iterator-->"+key);
+//                }
+
+//                Set<Map.Entry<String,Object>> mapSet = hashMap.entrySet();
+//                Iterator<Map.Entry<String,Object>> entryIterator =  mapSet.iterator();
+//                while (entryIterator.hasNext()){
+//                    Map.Entry<String,Object> entry = (Map.Entry<String,Object>) entryIterator.next();
+//                    LogUtil.e("hashSet--iterator-->"+entry.getKey());
+//                    LogUtil.e("hashSet--iterator-->"+entry.getValue());
+                }
+
+//                LogUtil.e("hashSet--hashMap--value-->"+hashMap.get("01"));
+//                int c = ctl.get();
+//                LogUtil.e("hashSet-->"+hashSet.size());
+//                LogUtil.e("hashSet--hashMap-->"+hashMap.size());
+
+//            }
         });
 //        Worker oldWorkerArr[] = new Worker[3];
 //        oldWorkerArr[0] = new Worker("张三",20 ,20000);
@@ -378,7 +423,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        LogUtil.e("data-->");
+        if(data != null){
+            LogUtil.e("data-->"+data.getStringExtra("name"));
+        }
         if(requestCode == 200 &&resultCode == RESULT_OK && data != null){
             HmsScan  hmsScan = data.getParcelableExtra(ScanUtil.RESULT);// 获取扫码结果 ScanUtil.RESULT
             if (hmsScan != null){
@@ -397,4 +445,13 @@ public class MainActivity extends AppCompatActivity {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
     }
+
+    private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
+    private static final int COUNT_BITS = Integer.SIZE - 3;
+    private static final int CAPACITY   = (1 << COUNT_BITS) - 1;
+
+    // runState is stored in the high-order bits
+    private static final int RUNNING    = -1 << COUNT_BITS;
+
+    private static int ctlOf(int rs, int wc) { return rs | wc; }
 }

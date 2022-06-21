@@ -1,33 +1,21 @@
 package com.example.exercisendk;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.exercisendk.callNative.NativeUtil;
 import com.me.support.utils.LogUtil;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.LinkedHashMap;
 import java.util.Locale;
-
-import static com.example.exercisendk.NativeUtil.getAppPackgeName;
 
 public class SecondActivity extends BaseActivity {
 

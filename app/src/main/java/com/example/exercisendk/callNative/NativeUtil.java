@@ -1,4 +1,4 @@
-package com.example.exercisendk;
+package com.example.exercisendk.callNative;
 
 import android.content.Context;
 import android.graphics.Bitmap;

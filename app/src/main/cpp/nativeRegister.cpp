@@ -8,7 +8,7 @@
 #include "defineMethod.h"
 
 
-#define JNIREG_CLASS "com/example/exercisendk/NativeUtil"//指定要注册的类
+#define JNIREG_CLASS "com/example/exercisendk/callNative/NativeUtil"//指定要注册的类
 
 /**
 * Table of methods associated with a single class.

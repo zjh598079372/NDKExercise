@@ -18,9 +18,6 @@ set_target_properties(opencv PROPERTIES IMPORTED_LOCATION ${FF}/libopencv_java3.
 add_library(avcodec SHARED IMPORTED)
 set_target_properties(avcodec PROPERTIES IMPORTED_LOCATION ${FF}/libavcodec-57.so)
 
-add_library(avdevice SHARED IMPORTED)
-set_target_properties(avdevice PROPERTIES IMPORTED_LOCATION ${FF}/libavdevice-57.so)
-
 add_library(avfilter SHARED IMPORTED)
 set_target_properties(avfilter PROPERTIES IMPORTED_LOCATION ${FF}/libavfilter-6.so)
 
@@ -29,9 +26,6 @@ set_target_properties(avformat PROPERTIES IMPORTED_LOCATION ${FF}/libavformat-57
 
 add_library(avutil SHARED IMPORTED)
 set_target_properties(avutil PROPERTIES IMPORTED_LOCATION ${FF}/libavutil-55.so)
-
-add_library(postproc SHARED IMPORTED)
-set_target_properties(postproc PROPERTIES IMPORTED_LOCATION ${FF}/libpostproc-54.so)
 
 add_library(swresample SHARED IMPORTED)
 set_target_properties(swresample PROPERTIES IMPORTED_LOCATION ${FF}/libswresample-2.so)
@@ -89,15 +83,9 @@ target_link_libraries(
         opencv
         jnigraphics
         avcodec
-        avdevice
         avfilter
         avformat
         avutil
-        postproc
         swresample
         swscale
-
-
-        # Links the target library to the log library
-        # included in the NDK.
         ${log-lib})

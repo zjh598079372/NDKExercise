@@ -4,6 +4,7 @@
 
 #ifndef EXERCISENDK_DEFINEMETHOD_H
 #define EXERCISENDK_DEFINEMETHOD_H
+
 #include <jni.h>
 
 
@@ -14,27 +15,27 @@ extern "C"
 JNIEXPORT jstring JNICALL decrypt(JNIEnv *env, jobject thiz, jstring ciphertext);
 
 extern "C"
-jstring getAppPackgeName(JNIEnv* env,jobject thiz,jobject context);
+jstring getAppPackgeName(JNIEnv *env, jobject thiz, jobject context);
 
 extern "C"
-jobject generateGrayBitmap(JNIEnv* env,jobject thiz,jobject bitmap,jint type);
+jobject generateGrayBitmap(JNIEnv *env, jobject thiz, jobject bitmap, jint type);
 
 extern "C"
-jobject againstWorld(JNIEnv* env,jobject thiz, jobject bitmap);
+jobject againstWorld(JNIEnv *env, jobject thiz, jobject bitmap);
 
 extern "C"
-jobject mirrorImage(JNIEnv* env,jobject thiz, jobject bitmap);
+jobject mirrorImage(JNIEnv *env, jobject thiz, jobject bitmap);
 
 extern "C"
-jobject rotationImage(JNIEnv* env,jobject thiz, jobject bitmap);
+jobject rotationImage(JNIEnv *env, jobject thiz, jobject bitmap);
 
 extern "C"
-jobject reflectionImage(JNIEnv* env,jobject thiz, jobject bitmap);
+jobject reflectionImage(JNIEnv *env, jobject thiz, jobject bitmap);
 
 extern "C"
 JNIEXPORT jstring JNICALL play(JNIEnv *env, jobject thiz, jstring filePath);
 
-class defineMethod{
+class defineMethod {
 
 };
 
