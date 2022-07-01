@@ -3,7 +3,7 @@ package com.example.exercisendk.callNative;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-public class NativeUtil {
+public class NativeBitmap {
     /**
      * encrypt the plaintext
      *
@@ -40,8 +40,4 @@ public class NativeUtil {
     public static final int TYPE_BILA = 2;  //双边滤波
 
 
-    /**
-     * 视频播放方法
-     */
-    public static native String play(String filePath);
 }

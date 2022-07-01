@@ -5,15 +5,16 @@
 #include <jni.h>
 #include <assert.h>
 #include <stdint.h>
-#include "defineMethod.h"
+#include "bitmapMethod.h"
+#include "playerMethod.h"
 
-
-#define JNIREG_CLASS "com/example/exercisendk/callNative/NativeUtil"//指定要注册的类
+#define NATIVE_BITMAP_CLASS "com/example/exercisendk/callNative/NativeBitmap"//指定要注册的类
+#define NATIVE_PLAYER_CLASS "com/example/exercisendk/callNative/NativePlayer"
 
 /**
 * Table of methods associated with a single class.
 */
-static JNINativeMethod gMethods[] = {
+static JNINativeMethod bitmapMethods[] = {
         {"encrypt",            "(Ljava/lang/String;)Ljava/lang/String;",                (void *) encrypt},
         {"decrypt",            "(Ljava/lang/String;)Ljava/lang/String;",                (void *) decrypt},
         {"getAppPackgeName",   "(Landroid/content/Context;)Ljava/lang/String;",         (void *) getAppPackgeName},
@@ -21,21 +22,26 @@ static JNINativeMethod gMethods[] = {
         {"againstWorld",       "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;",  (void *) againstWorld},
         {"mirrorImage",        "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;",  (void *) mirrorImage},
         {"rotationImage",      "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;",  (void *) rotationImage},
-        {"reflectionImage",    "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;",  (void *) reflectionImage},
-        {"play",               "(Ljava/lang/String;)Ljava/lang/String;",                (void *) play}
+        {"reflectionImage",    "(Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;",  (void *) reflectionImage}
+
+};
+
+static JNINativeMethod playerMethods[] = {
+        {"nPlay", "(Ljava/lang/String;)Ljava/lang/String;", (void *) play}
 };
 
 /*
 * Register several native methods for one class.
 */
 static int registerNativeMethods(JNIEnv *env, const char *className,
-                                 JNINativeMethod *gMethods, int numMethods) {
+                                 JNINativeMethod *bitmapMethods, int numMethods) {
     jclass clazz;
     clazz = env->FindClass(className);
     if (clazz == NULL) {
         return JNI_FALSE;
     }
-    if (env->RegisterNatives(clazz, gMethods, numMethods) < 0) {
+    if (env->RegisterNatives(clazz, bitmapMethods, numMethods) < 0) {
+        env->UnregisterNatives(clazz);
         return JNI_FALSE;
     }
 
@@ -47,10 +53,12 @@ static int registerNativeMethods(JNIEnv *env, const char *className,
 * Register native methods for all classes we know about.
 */
 static int registerNatives(JNIEnv *env) {
-    if (!registerNativeMethods(env, JNIREG_CLASS, gMethods,
-                               sizeof(gMethods) / sizeof(gMethods[0])))
+    if (!registerNativeMethods(env, NATIVE_BITMAP_CLASS, bitmapMethods,
+                               sizeof(bitmapMethods) / sizeof(bitmapMethods[0])))
         return JNI_FALSE;
-
+    if (!registerNativeMethods(env, NATIVE_PLAYER_CLASS, playerMethods,
+                               sizeof(playerMethods) / sizeof(playerMethods[0])))
+        return JNI_FALSE;
     return JNI_TRUE;
 }
 

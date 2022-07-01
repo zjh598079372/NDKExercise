@@ -53,10 +53,12 @@ add_library( # Sets the name of the library.
         Params.cpp
         priorityQueue.hpp
         BST.hpp
-        defineMethod.cpp
-        defineMethod.h
-        nativeRegister.cpp
-        nativeRegister.h
+        jniNativeRegister/bitmapMethod.cpp
+        jniNativeRegister/bitmapMethod.h
+        jniNativeRegister/nativeRegister.cpp
+        jniNativeRegister/nativeRegister.h
+        jniNativeRegister/playerMethod.cpp
+        jniNativeRegister/playerMethod.h
         bitmap/BitmapHelper.h
         bitmap/BitmapHelper.cpp
         )

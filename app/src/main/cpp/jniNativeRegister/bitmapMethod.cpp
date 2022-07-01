@@ -2,24 +2,17 @@
 // Created by CL002 on 2022-3-17.
 //
 
-#include "defineMethod.h"
+#include "bitmapMethod.h"
 #include <string>
 #include <android/bitmap.h>
-#include <opencv2/core/mat.hpp>
-#include <opencv2/imgproc.hpp>
+#include <../opencv2/core/mat.hpp>
+#include <../opencv2/imgproc.hpp>
 #include <android/log.h>
-#include <opencv2/highgui.hpp>
-#include "bitmap/BitmapHelper.h"
+#include <../opencv2/highgui.hpp>
+#include "../bitmap/BitmapHelper.h"
 #include <math.h>
 #include "XLog.h"
-extern "C"{
-#include <ffmpeg/libavformat/avformat.h>
-};
 
-/**
- * ffmpeg
- */
-AVFormatContext* avFormatContext = NULL;
 
 
 using namespace cv;
@@ -291,14 +284,3 @@ jobject reflectionImage(JNIEnv* env,jobject thiz,jobject bitmap){
 }
 
 
-extern "C"
-jstring play(JNIEnv* env,jobject thiz,jstring filePath){
-    av_register_all();
-    avformat_network_init();
-    const char* url = env->GetStringUTFChars(filePath, 0);
-    int result = avformat_open_input(&avFormatContext,url,NULL,NULL);
-    XLOGE("result-->value-->%d",result);
-    strerror(result);
-    std::string hello = "HelloWorld";
-    return env->NewStringUTF(hello.c_str());
-}

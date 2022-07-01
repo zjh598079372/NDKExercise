@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.exercisendk.callNative.NativeBitmap;
+import com.example.exercisendk.callNative.NativePlayer;
 import com.qw.soul.permission.SoulPermission;
 import com.qw.soul.permission.bean.Permission;
 import com.qw.soul.permission.bean.Permissions;
@@ -25,7 +27,7 @@ public class VideoActivity extends AppCompatActivity {
                     @Override
                     public void onAllPermissionOk(Permission[] allPermissions) {
                         ///storage/sdcard0/Android/data/com.example.exercisendk/files/xcreen_20180607_225659.mp4
-                        NativeUtil.play(getExternalFilesDir("").getAbsolutePath()+"/xcreen_20180607_225659.mp4");
+                        NativePlayer.nPlay(getExternalFilesDir("").getAbsolutePath()+"/test.mp4");
                     }
 
                     @Override

@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.exercisendk.callNative.NativeUtil;
+import com.example.exercisendk.callNative.NativeBitmap;
 import com.me.support.utils.LogUtil;
 
 import java.security.MessageDigest;
@@ -34,7 +34,7 @@ public class SecondActivity extends BaseActivity {
 //                NativeUtil.generateGrayBitmap(src_bitmap);
 //                ((ImageView)findViewById(R.id.image)).setImageBitmap(src_bitmap);
 //                ((ImageView)findViewById(R.id.image)).setImageBitmap(NativeUtil.againstWorld(src_bitmap));
-                Bitmap newBitmap = NativeUtil.mirrorImage(src_bitmap);
+                Bitmap newBitmap = NativeBitmap.mirrorImage(src_bitmap);
                 ((ImageView)findViewById(R.id.image)).setImageBitmap(newBitmap);
             }
         });
@@ -42,7 +42,7 @@ public class SecondActivity extends BaseActivity {
         findViewById(R.id.tv_intercept).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LogUtil.e("getAppPackgeName-->"+NativeUtil.getAppPackgeName(SecondActivity.this));
+                LogUtil.e("getAppPackgeName-->"+ NativeBitmap.getAppPackgeName(SecondActivity.this));
 
                 Bitmap src_bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon_comfort_level);
 

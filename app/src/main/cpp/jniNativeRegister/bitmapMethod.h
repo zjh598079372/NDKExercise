@@ -2,8 +2,8 @@
 // Created by CL002 on 2022-3-17.
 //
 
-#ifndef EXERCISENDK_DEFINEMETHOD_H
-#define EXERCISENDK_DEFINEMETHOD_H
+#ifndef EXERCISENDK_BITMAPMETHOD_H
+#define EXERCISENDK_BITMAPMETHOD_H
 
 #include <jni.h>
 
@@ -32,12 +32,11 @@ jobject rotationImage(JNIEnv *env, jobject thiz, jobject bitmap);
 extern "C"
 jobject reflectionImage(JNIEnv *env, jobject thiz, jobject bitmap);
 
-extern "C"
-JNIEXPORT jstring JNICALL play(JNIEnv *env, jobject thiz, jstring filePath);
 
-class defineMethod {
+
+class bitmapMethod {
 
 };
 
 
-#endif //EXERCISENDK_DEFINEMETHOD_H
+#endif //EXERCISENDK_BITMAPMETHOD_H

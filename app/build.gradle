@@ -59,6 +59,18 @@ android {
             jniLibs.srcDirs = ['src/main/cpp/libs']
         }
     }
+
+    dexOptions {//dex配置
+        javaMaxHeapSize "4g"
+        preDexLibraries = false
+        def listFile = project.rootDir.absolutePath+'/app/maindexlist.txt'
+        additionalParameters = [//dex参数详见 dx --help
+                                '--multi-dex',//多分包
+                                '--set-max-idx-number=60000',//每个包内方法数上限
+                                '--main-dex-list='+listFile,//打包进主classes.dex的文件列表
+                                '--minimal-main-dex'//使上一句生效
+        ]
+    }
 }
 
 dependencies {

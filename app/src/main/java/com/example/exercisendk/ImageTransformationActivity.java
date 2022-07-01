@@ -10,9 +10,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.exercisendk.callNative.NativeBitmap;
 import com.me.support.recyclerView.CommonRecyclerViewAdapter;
 import com.me.support.recyclerView.MyViewHolder;
-import com.me.support.utils.BitmapUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,24 +52,24 @@ public class ImageTransformationActivity extends AppCompatActivity {
                         if(data.equals("原图")){
                             showIV.setImageResource(R.drawable.dog);
                         }else if(data.equals("灰度")){
-                            showIV.setImageBitmap(NativeUtil.generateGrayBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options),NativeUtil.TYPE_GRAY));
+                            showIV.setImageBitmap(NativeBitmap.generateGrayBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options), NativeBitmap.TYPE_GRAY));
                         }else if(data.equals("高斯模糊")){
-                            showIV.setImageBitmap(NativeUtil.generateGrayBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options),NativeUtil.TYPE_GUASI));
+                            showIV.setImageBitmap(NativeBitmap.generateGrayBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options), NativeBitmap.TYPE_GUASI));
                         }else if(data.equals("美容")){
-                            showIV.setImageBitmap(NativeUtil.generateGrayBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options),NativeUtil.TYPE_BILA));
+                            showIV.setImageBitmap(NativeBitmap.generateGrayBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options), NativeBitmap.TYPE_BILA));
                         } else if(data.equals("逆世界")){
-                            showIV.setImageBitmap(NativeUtil.againstWorld(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options)));
+                            showIV.setImageBitmap(NativeBitmap.againstWorld(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options)));
                         }else if(data.equals("镜像")){
-                            showIV.setImageBitmap(NativeUtil.mirrorImage(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options)));
+                            showIV.setImageBitmap(NativeBitmap.mirrorImage(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options)));
                         }else if(data.equals("旋转")){
                             options.inMutable = true;
                             if(rotationBitamp == null){
                                 rotationBitamp = BitmapFactory.decodeResource(getResources(),R.drawable.dog,options);
                             }
-                            showIV.setImageBitmap(NativeUtil.rotationImage(rotationBitamp));
+                            showIV.setImageBitmap(NativeBitmap.rotationImage(rotationBitamp));
                         }else if(data.equals("倒影")){
                             options.inMutable = true;
-                            showIV.setImageBitmap(NativeUtil.reflectionImage(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options)));
+                            showIV.setImageBitmap(NativeBitmap.reflectionImage(BitmapFactory.decodeResource(getResources(),R.drawable.dog,options)));
                         }else if(data.equals("加水印")){
                             Bitmap dog = BitmapFactory.decodeResource(getResources(),R.drawable.zhuye,options);
                             Bitmap waterDog = BitmapUtils.addTimeWatermark(dog,100);
