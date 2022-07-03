@@ -27,7 +27,7 @@ public class VideoActivity extends AppCompatActivity {
                     @Override
                     public void onAllPermissionOk(Permission[] allPermissions) {
                         ///storage/sdcard0/Android/data/com.example.exercisendk/files/xcreen_20180607_225659.mp4
-                        NativePlayer.nPlay(getExternalFilesDir("").getAbsolutePath()+"/test.mp4");
+                        NativePlayer.nPlay(getExternalFilesDir("").getAbsolutePath()+"/cuc_ieschool.mp4");
                     }
 
                     @Override

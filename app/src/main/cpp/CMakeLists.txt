@@ -61,6 +61,14 @@ add_library( # Sets the name of the library.
         jniNativeRegister/playerMethod.h
         bitmap/BitmapHelper.h
         bitmap/BitmapHelper.cpp
+        player/IPlayer.h
+        player/IPlayer.cpp
+        player/IPlayerPorxy.cpp
+        player/IPlayerPorxy.h
+        player/demux/IDemux.h
+        player/demux/IDemux.cpp
+        player/demux/FFDemux.h
+        player/demux/FFDemux.cpp
         )
 
 # Searches for a specified prebuilt library and stores the path as a

@@ -9,8 +9,19 @@
 #include "IPlayer.h"
 
 class IPlayerPorxy : public IPlayer{
+public:
 
-    static IPlayerPorxy iPlayerPorxy;
+    IPlayer *iPlayer = 0;
+    static IPlayerPorxy* Get(){
+        static IPlayerPorxy iPlayerPorxy;
+        return &iPlayerPorxy;
+    }
+
+    void Init(void* vm );
+
+    virtual bool open(const char* url);
+
+
 
 };
 
