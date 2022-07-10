@@ -82,6 +82,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     }
     /* success -- return valid version number */
     result = JNI_VERSION_1_4;
-    IPlayerPorxy::Get()->Init(vm);
+    IPlayerPorxy::Get()->Init(vm,env);
     return result;
 }

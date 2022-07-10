@@ -14,7 +14,7 @@ jstring play(JNIEnv* env,jobject thiz,jstring filePath){
 
     const char* url = env->GetStringUTFChars(filePath,0);
     XLOGE("url-->value-->%s",url);
-    IPlayerPorxy::Get()->open(url);
+    IPlayerPorxy::Get()->open(env,thiz,url);
     std::string hello = "HelloWorld";
     return env->NewStringUTF(hello.c_str());
 }

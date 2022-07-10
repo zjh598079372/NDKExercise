@@ -63,6 +63,8 @@ add_library( # Sets the name of the library.
         bitmap/BitmapHelper.cpp
         player/IPlayer.h
         player/IPlayer.cpp
+        player/FFJniCallback.h
+        player/FFJniCallback.cpp
         player/IPlayerPorxy.cpp
         player/IPlayerPorxy.h
         player/demux/IDemux.h
