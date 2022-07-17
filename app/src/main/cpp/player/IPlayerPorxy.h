@@ -17,7 +17,6 @@ extern "C"{
 class IPlayerPorxy : public IPlayer{
 public:
     AVFormatContext* avFormatContext = NULL;
-
     IPlayer *iPlayer = 0;
     FFJniCallback* fFJniCallback = 0;
     JavaVM* globalVm = 0;
@@ -33,7 +32,16 @@ public:
     virtual bool open(JNIEnv* env, const jobject thiz,const char *url);
 
 
+    void release_resorce();
 
+
+    AVCodecContext *avCodecContext = NULL;
+    AVPacket *avPacket = NULL;
+    AVFrame *avFrame = NULL;
+
+    jobject initAudioTrack(JNIEnv *pEnv);
+
+    jobject audioTrack = NULL;
 };
 
 

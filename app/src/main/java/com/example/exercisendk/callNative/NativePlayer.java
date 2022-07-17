@@ -37,5 +37,5 @@ public class NativePlayer {
     /**
      * 视频播放方法
      */
-    public native String nPlay(String url);
+    public native void nPlay(String url);
 }

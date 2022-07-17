@@ -8,9 +8,10 @@
 #endif //EXERCISENDK_PLAYERMETHOD_H
 
 #include <jni.h>
+#include "../player/IPlayer.h"
 
 
-JNIEXPORT jstring JNICALL play(JNIEnv *env, jobject thiz, jstring url);
+JNIEXPORT void JNICALL play(JNIEnv *env, jobject thiz, jstring url);
 
 class playerMethod{
 

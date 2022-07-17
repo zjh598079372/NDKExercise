@@ -28,7 +28,7 @@ static JNINativeMethod bitmapMethods[] = {
 };
 
 static JNINativeMethod playerMethods[] = {
-        {"nPlay", "(Ljava/lang/String;)Ljava/lang/String;", (void *) play}
+        {"nPlay", "(Ljava/lang/String;)V", (void *) play}
 };
 
 /*
