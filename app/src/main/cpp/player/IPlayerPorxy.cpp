@@ -58,6 +58,44 @@ bool IPlayerPorxy::open(JNIEnv* env, const jobject thiz,const char *url) {
     audioTrack = initAudioTrack(env);
     jclass  audioTrackClass = env->FindClass("android/media/AudioTrack");
     jmethodID writeMethodID = env->GetMethodID(audioTrackClass,"write","([BII)I");
+
+    /**
+     * 音频重采样
+     * struct SwrContext *swr_alloc_set_opts(struct SwrContext *s,
+     *                                int64_t out_ch_layout, enum AVSampleFormat out_sample_fmt, int out_sample_rate,
+     *                                 int64_t  in_ch_layout, enum AVSampleFormat  in_sample_fmt, int  in_sample_rate,
+     *                                 int log_offset, void *log_ctx);
+     */
+    int64_t out_ch_layout = AV_CH_LAYOUT_STEREO;
+    enum AVSampleFormat out_sample_fmt = AV_SAMPLE_FMT_S16;
+    int out_sample_rate = SAMPLE_RATE;
+    int64_t  in_ch_layout = avCodecContext->channel_layout;
+    enum AVSampleFormat  in_sample_fmt = avCodecContext->sample_fmt;
+    int  in_sample_rate = avCodecContext->sample_rate;
+    SwrContext * swrContext = swr_alloc_set_opts(NULL,out_ch_layout,out_sample_fmt,out_sample_rate,in_ch_layout,in_sample_fmt,
+                       in_sample_rate,0,NULL);
+    if(swrContext == NULL){
+        release_resorce();
+        return false;
+    }
+
+    result = swr_init(swrContext);
+    if(result){
+        release_resorce();
+        return false;
+    }
+    /**
+    * 用AudioTrack播放，上面创建完AudioTrack实例，以及调用了play()方法之后，
+    * 要调用下面的write(byte[] audioData, int offsetInBytes, int sizeInBytes)进行播放
+    * int write(@NonNull byte[] audioData, int offsetInBytes, int sizeInBytes)
+    */
+    //数组的大小 = 一帧的的采样率*通道数*字节数
+    int out_channels = av_get_channel_layout_nb_channels(out_ch_layout);
+    int bufferSize = av_samples_get_buffer_size(NULL,out_channels,avCodecContext->frame_size,out_sample_fmt,0);
+    uint8_t *out = static_cast<uint8_t *>(malloc(sizeof(bufferSize)));
+    jbyteArray byteArray = env->NewByteArray(bufferSize);
+    jbyte* byte = env->GetByteArrayElements(byteArray,NULL);
+
     avPacket = av_packet_alloc();
     avFrame = av_frame_alloc();
     int index = 1;
@@ -69,19 +107,12 @@ bool IPlayerPorxy::open(JNIEnv* env, const jobject thiz,const char *url) {
                 result = avcodec_receive_frame(avCodecContext,avFrame);
                 if(result == 0){
                     XLOGE("解码第-->%d帧",index);
-                    /**
-                     * 用AudioTrack播放，上面创建完AudioTrack实例，以及调用了play()方法之后，
-                     * 要调用下面的write(byte[] audioData, int offsetInBytes, int sizeInBytes)进行播放
-                     * int write(@NonNull byte[] audioData, int offsetInBytes, int sizeInBytes)
-                     */
-                    //
-                    //数组的大小 = 一帧的的采样率*通道数*字节数
-                    int bufferSize = av_samples_get_buffer_size(NULL,avFrame->channels,avFrame->nb_samples,
-                                               avCodecContext->sample_fmt,0);
-                    jbyteArray byteArray = env->NewByteArray(bufferSize);
-                    jbyte* byte = env->GetByteArrayElements(byteArray,NULL);
-                    memcpy(byte,avFrame->data,bufferSize);
-                    env->ReleaseByteArrayElements(byteArray,byte,0);
+
+                    //调用重采样
+                    swr_convert(swrContext, &out, avFrame->nb_samples,
+                                (const uint8_t **)(avFrame->data), avFrame->nb_samples);
+                    memcpy(byte,out,bufferSize);
+                    env->ReleaseByteArrayElements(byteArray,byte,JNI_COMMIT);
                     env->CallIntMethod(audioTrack,writeMethodID,byteArray,0,bufferSize);
 
                 }
@@ -93,6 +124,10 @@ bool IPlayerPorxy::open(JNIEnv* env, const jobject thiz,const char *url) {
         av_packet_unref(avPacket);
 
     }
+
+    free(out);
+    out = NULL;
+    env->DeleteLocalRef(byteArray);
 
     if(audioTrack != NULL){
         env->DeleteLocalRef(audioTrack);

@@ -42,7 +42,7 @@ public class VideoActivity extends AppCompatActivity {
                                 LogUtil.e(TAG+"onSuccess-->");
                             }
                         });
-                        nativePlayer.nPlay(getExternalFilesDir("").getAbsolutePath()+"/cuc_ieschool.mp4");
+                        nativePlayer.nPlay(getExternalFilesDir("").getAbsolutePath()+"/video.mp4");
                     }
 
                     @Override

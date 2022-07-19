@@ -12,6 +12,7 @@
 #include "../include/XLog.h"
 extern "C"{
 #include "../include/ffmpeg/libavformat/avformat.h"
+#include "../include/ffmpeg/libswresample/swresample.h"
 }
 
 class IPlayerPorxy : public IPlayer{
