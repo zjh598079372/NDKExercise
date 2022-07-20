@@ -42,7 +42,8 @@ public class VideoActivity extends AppCompatActivity {
                                 LogUtil.e(TAG+"onSuccess-->");
                             }
                         });
-                        nativePlayer.nPlay(getExternalFilesDir("").getAbsolutePath()+"/video.mp4");
+//                        nativePlayer.nPlay(getExternalFilesDir("").getAbsolutePath()+"/video.mp4");
+                        nativePlayer.nPlay(getExternalFilesDir("").getAbsolutePath()+"/beijingbeijing.mp3");
                     }
 
                     @Override

@@ -9,6 +9,6 @@
 
 #define STREAM_TYPE 3
 #define SAMPLE_RATE 44100
-#define CHANNEL_CONFIG 12
+#define CHANNEL_CONFIG (0X4 | 0X8)
 #define AUDIO_FORMAT 2
 #define MODE 1
