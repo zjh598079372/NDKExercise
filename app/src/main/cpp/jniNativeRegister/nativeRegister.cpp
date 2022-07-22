@@ -6,8 +6,8 @@
 #include <assert.h>
 #include <stdint.h>
 #include "bitmapMethod.h"
-#include "playerMethod.h"
 #include "../player/IPlayerPorxy.h"
+#include "../player/videoPlay/FFPlayer.h"
 
 #define NATIVE_BITMAP_CLASS "com/example/exercisendk/callNative/NativeBitmap"//指定要注册的类
 #define NATIVE_PLAYER_CLASS "com/example/exercisendk/callNative/NativePlayer"
@@ -28,7 +28,9 @@ static JNINativeMethod bitmapMethods[] = {
 };
 
 static JNINativeMethod playerMethods[] = {
-        {"nPlay", "(Ljava/lang/String;)V", (void *) play}
+        {"nPlay", "()V", (void *) play},
+        {"nPrepared", "(Ljava/lang/String;)V", (void *) prepared},
+        {"nPreparedAsync", "(Ljava/lang/String;)V", (void *) preparedAsync}
 };
 
 /*
@@ -82,6 +84,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     }
     /* success -- return valid version number */
     result = JNI_VERSION_1_4;
-    IPlayerPorxy::Get()->Init(vm,env);
+//    IPlayerPorxy::Get()->Init(vm,env);
+    FFPlayer::Get(vm);
     return result;
 }

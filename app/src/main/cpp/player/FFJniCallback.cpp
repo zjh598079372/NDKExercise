@@ -2,25 +2,66 @@
 // Created by zjh on 2022/7/10.
 //
 
+#include <XLog.h>
 #include "FFJniCallback.h"
 
-FFJniCallback::FFJniCallback(JavaVM* vm,JNIEnv *env,jobject thiz):vm(vm),env(env),jPlayerObject(thiz){
+FFJniCallback::FFJniCallback(JavaVM *vm, JNIEnv *env, jobject thiz) : vm(vm), env(env),
+                                                                      jPlayerObject(thiz) {
 
     jPlayerClass = env->GetObjectClass(jPlayerObject);
-    errorJmethodID = env->GetMethodID(jPlayerClass,"onErrorListener","(ILjava/lang/String;)V");
-    successJmethodID = env->GetMethodID(jPlayerClass,"onSuccessListener","()V");
+    errorJmethodID = env->GetMethodID(jPlayerClass, "onErrorListener", "(ILjava/lang/String;)V");
+    successJmethodID = env->GetMethodID(jPlayerClass, "onSuccessListener", "()V");
+    preparedJmethodID = env->GetMethodID(jPlayerClass,"onPrepared","()V");
 }
 
-void FFJniCallback::onErrorListener(int errorCode, char *mes) {
+void FFJniCallback::onErrorListener(Thread_Mode threadMode, int errorCode, char *msg) {
 
-    //创建回调到java方法
-    jstring errorStr = env->NewStringUTF(mes);
-    env->CallVoidMethod(jPlayerObject,errorJmethodID,errorCode,errorStr);
-    env->DeleteLocalRef(errorStr);
+    if (threadMode == THREAD_MAIN) {
+        //创建回调到java方法
+        jstring errorStr = env->NewStringUTF(msg);
+        env->CallVoidMethod(jPlayerObject, errorJmethodID, errorCode, errorStr);
+        env->DeleteLocalRef(errorStr);
+    } else if (threadMode == THREAD_CHILD) {
+        JNIEnv *p_env = NULL;
+        if (vm->AttachCurrentThread(&p_env, NULL) != JNI_OK) {
+            XLOGE("Get child thread env error");
+            return;
+        }
+        jstring message = env->NewStringUTF(msg);
+        env->CallVoidMethod(jPlayerObject, errorJmethodID, errorCode, message);
+        env->DeleteLocalRef(message);
+        vm->DetachCurrentThread();
+    }
+
 }
 
-void FFJniCallback::onSuccessListener() {
+void FFJniCallback::onSuccessListener(Thread_Mode threadMode) {
     //创建回调到java方法
-    env->CallVoidMethod(jPlayerObject,successJmethodID);
+    if (threadMode == THREAD_MAIN) {
+        env->CallVoidMethod(jPlayerObject, successJmethodID);
+    } else if (threadMode == THREAD_CHILD) {
+        JNIEnv *p_env = NULL;
+        if (!vm->AttachCurrentThread(&p_env, 0)) {
+            XLOGE("Get child thread env error");
+        }
+        p_env->CallVoidMethod(jPlayerObject, successJmethodID);
+        vm->DetachCurrentThread();
+    }
+
+
+}
+
+void FFJniCallback::onPerpared(Thread_Mode threadMode) {
+    //创建回调到java方法
+    if (threadMode == THREAD_MAIN) {
+        env->CallVoidMethod(jPlayerObject, preparedJmethodID);
+    } else if (threadMode == THREAD_CHILD) {
+        JNIEnv *p_env = NULL;
+        if (!vm->AttachCurrentThread(&p_env, 0)) {
+            XLOGE("Get child thread env error");
+        }
+        p_env->CallVoidMethod(jPlayerObject, preparedJmethodID);
+        vm->DetachCurrentThread();
+    }
 
 }

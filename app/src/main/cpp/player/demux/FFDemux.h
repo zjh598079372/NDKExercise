@@ -8,6 +8,8 @@
 #include "IDemux.h"
 #include <string>
 #include "../../include/XLog.h"
+#include "../FFJniCallback.h"
+
 extern "C"{
 #include "../../include/ffmpeg/libavformat/avformat.h"
 }
@@ -15,6 +17,9 @@ extern "C"{
 class FFDemux : public IDemux{
 
 public:
+    FFJniCallback *pCallback = 0;
+    FFDemux(FFJniCallback *pCallback);
+
     AVFormatContext* avFormatContext = NULL;
 
 

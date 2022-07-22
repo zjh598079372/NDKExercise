@@ -6,7 +6,9 @@
 #define EXERCISENDK_FFJNICALLBACK_H
 
 #include <jni.h>
-
+enum Thread_Mode{
+    THREAD_CHILD,THREAD_MAIN
+};
 
 class FFJniCallback {
 public:
@@ -16,11 +18,14 @@ public:
     jclass jPlayerClass;
     jmethodID errorJmethodID;
     jmethodID successJmethodID;
+    jmethodID preparedJmethodID;
 
     FFJniCallback(JavaVM* vm,JNIEnv *env, jobject thiz);
 
-    void onErrorListener(int errorCode, char* mes );
-    void onSuccessListener();
+    void onErrorListener(Thread_Mode  threadMode,int errorCode, char* msg );
+    void onSuccessListener(Thread_Mode  threadMode);
+    void onPerpared(Thread_Mode threadMode);
+
 
 };
 

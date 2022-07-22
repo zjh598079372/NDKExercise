@@ -4,6 +4,9 @@
 
 #include "FFDemux.h"
 
+FFDemux::FFDemux(FFJniCallback *pCallback){
+
+}
 
 bool FFDemux::open(const char *url) {
 

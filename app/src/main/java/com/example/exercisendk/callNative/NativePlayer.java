@@ -34,8 +34,27 @@ public class NativePlayer {
         }
     }
 
+    public void onPrepared(){
+        LogUtil.e(TAG+"onPrepared");
+    }
+
+
+     /**************================== 视频播放方法=====================*************************/
+
     /**
-     * 视频播放方法
+     * 播放前的同步准备
+     * @param url
      */
-    public native void nPlay(String url);
+    public native void nPrepared(String url);
+
+    /**
+     * 播放前的异步准备
+     * @param url
+     */
+    public native void nPreparedAsync(String url);
+
+    /**
+     * 真正的播放
+     */
+    public native void nPlay();
 }

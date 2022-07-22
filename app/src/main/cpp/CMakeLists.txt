@@ -71,6 +71,11 @@ add_library( # Sets the name of the library.
         player/demux/IDemux.cpp
         player/demux/FFDemux.h
         player/demux/FFDemux.cpp
+        player/zjhMedia/ZJHMedia.h
+        player/zjhMedia/ZJHMedia.cpp
+        player/videoPlay/FFPlayer.h
+        player/videoPlay/FFPlayer.cpp
+
         )
 
 # Searches for a specified prebuilt library and stores the path as a
