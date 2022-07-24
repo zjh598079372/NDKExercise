@@ -6,9 +6,9 @@
 #include "demux/FFDemux.h"
 
 bool IPlayer::open(const char *url) {
-    if(!iDemux){
-        iDemux = new FFDemux();
-    }
-    return iDemux->open(url);
+//    if(!iDemux){
+//        iDemux = new FFDemux();
+//    }
+//    return iDemux->open(url);
 
 }

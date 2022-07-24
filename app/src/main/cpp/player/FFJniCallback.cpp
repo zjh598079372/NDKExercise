@@ -4,14 +4,16 @@
 
 #include <XLog.h>
 #include "FFJniCallback.h"
+#include "ConstDefine.h"
 
-FFJniCallback::FFJniCallback(JavaVM *vm, JNIEnv *env, jobject thiz) : vm(vm), env(env),
-                                                                      jPlayerObject(thiz) {
+FFJniCallback::FFJniCallback(JavaVM *vm, JNIEnv *env, jobject thiz) : vm(vm), env(env) {
 
+    XLOGE("ENV-->%p",&env);
+    jPlayerObject = env->NewGlobalRef(thiz);
     jPlayerClass = env->GetObjectClass(jPlayerObject);
     errorJmethodID = env->GetMethodID(jPlayerClass, "onErrorListener", "(ILjava/lang/String;)V");
     successJmethodID = env->GetMethodID(jPlayerClass, "onSuccessListener", "()V");
-    preparedJmethodID = env->GetMethodID(jPlayerClass,"onPrepared","()V");
+    preparedJmethodID = env->GetMethodID(jPlayerClass, "onPrepared", "()V");
 }
 
 void FFJniCallback::onErrorListener(Thread_Mode threadMode, int errorCode, char *msg) {
@@ -64,4 +66,26 @@ void FFJniCallback::onPerpared(Thread_Mode threadMode) {
         vm->DetachCurrentThread();
     }
 
+}
+
+jobject FFJniCallback::initAudioTrack() {
+
+    jclass audioTrackClass = env->FindClass("android/media/AudioTrack");
+    jmethodID initMethodID = env->GetMethodID(audioTrackClass, "<init>", "(IIIIII)V");
+    jmethodID minBufferSizeID = env->GetStaticMethodID(audioTrackClass, "getMinBufferSize",
+                                                       "(III)I");
+    int bufferSize = env->CallStaticIntMethod(audioTrackClass, minBufferSizeID, SAMPLE_RATE,
+                                              CHANNEL_CONFIG, AUDIO_FORMAT);
+    jobject audioTrack = env->NewObject(audioTrackClass, initMethodID,
+                                        STREAM_TYPE, SAMPLE_RATE, CHANNEL_CONFIG,
+                                        AUDIO_FORMAT, bufferSize, MODE);
+    jmethodID playMethodID = env->GetMethodID(audioTrackClass, "play", "()V");
+    env->CallVoidMethod(audioTrack, playMethodID);
+    return audioTrack;
+
+}
+
+FFJniCallback :: ~FFJniCallback(){
+    env->DeleteGlobalRef(jPlayerObject);
+    jPlayerObject = NULL;
 }

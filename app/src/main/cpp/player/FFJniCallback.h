@@ -12,21 +12,21 @@ enum Thread_Mode{
 
 class FFJniCallback {
 public:
-    JavaVM* vm;
-    JNIEnv *env;
-    jobject jPlayerObject;
-    jclass jPlayerClass;
-    jmethodID errorJmethodID;
-    jmethodID successJmethodID;
-    jmethodID preparedJmethodID;
+    JavaVM* vm = 0;
+    JNIEnv* env = 0;
+    jobject jPlayerObject = 0;
+    jclass jPlayerClass = 0;
+    jmethodID errorJmethodID = 0;
+    jmethodID successJmethodID = 0;
+    jmethodID preparedJmethodID = 0;
 
     FFJniCallback(JavaVM* vm,JNIEnv *env, jobject thiz);
+    ~FFJniCallback();
 
     void onErrorListener(Thread_Mode  threadMode,int errorCode, char* msg );
     void onSuccessListener(Thread_Mode  threadMode);
     void onPerpared(Thread_Mode threadMode);
-
-
+    jobject initAudioTrack();
 };
 
 

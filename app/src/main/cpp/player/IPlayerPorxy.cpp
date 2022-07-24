@@ -19,13 +19,13 @@ void IPlayerPorxy::Init(JavaVM *vm, JNIEnv *env) {
 }
 
 bool IPlayerPorxy::open(JNIEnv *env, const jobject thiz, const char *url) {
-    if (!fFJniCallback) {
-        fFJniCallback = new FFJniCallback(globalVm, env, thiz);
-    }
-    if (!zjhMedia) {
-        zjhMedia = new ZJHMedia(fFJniCallback);
-        zjhMedia->open(url);
-    }
+//    if (!fFJniCallback) {
+//        fFJniCallback = new FFJniCallback(globalVm, env, thiz);
+//    }
+//    if (!zjhMedia) {
+//        zjhMedia = new ZJHMedia(fFJniCallback);
+//        zjhMedia->open(url);
+//    }
 
 
     return true;

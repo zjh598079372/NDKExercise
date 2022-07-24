@@ -65,6 +65,8 @@ add_library( # Sets the name of the library.
         player/IPlayer.cpp
         player/FFJniCallback.h
         player/FFJniCallback.cpp
+        player/FFmpeg.cpp
+        player/FFmpeg.h
         player/IPlayerPorxy.cpp
         player/IPlayerPorxy.h
         player/demux/IDemux.h

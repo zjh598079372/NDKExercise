@@ -7,6 +7,7 @@
 
 #include <jni.h>
 #include "../FFJniCallback.h"
+#include "../FFmpeg.h"
 
 JNIEXPORT void JNICALL play(JNIEnv *env, jobject thiz);
 JNIEXPORT void JNICALL prepared(JNIEnv *env, jobject thiz, jstring url);
@@ -14,7 +15,9 @@ JNIEXPORT void JNICALL preparedAsync(JNIEnv *env, jobject thiz, jstring url);
 class FFPlayer {
 public:
     JavaVM* globalVm = 0;
-    FFJniCallback ffJniCallback = NULL;
+    JNIEnv* globalEnv = 0;
+    FFJniCallback* ffJniCallback = 0;
+    FFmpeg* fFmpeg = 0;
 public:
     static FFPlayer* Get(){
         static FFPlayer ffPlayer;
@@ -23,8 +26,8 @@ public:
 
     void Init(JavaVM *vm, JNIEnv *env);
     void play(JNIEnv *env, jobject thiz);
-    void prepared(JNIEnv *env, jobject thiz, jstring url);
-    void preparedAsync(JNIEnv *env, jobject thiz, jstring url);
+    void prepared(JNIEnv *env,jobject thiz, jstring url);
+    void preparedAsync(JNIEnv *env,jobject thiz, jstring url);
 
 };
 

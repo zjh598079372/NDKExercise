@@ -6,19 +6,19 @@
 #include "../FFJniCallback.h"
 
 
+//JNIEnv *localEnv = NULL;
+
+FFJniCallback* ffJniCallback = NULL;
+FFmpeg *fFmpeg = NULL;
+JavaVM *localvm = NULL;
+
 void FFPlayer::Init(JavaVM *vm, JNIEnv *env) {
-    globalVm = reinterpret_cast<JavaVM *>(env->NewGlobalRef(reinterpret_cast<jobject>(vm)));
+    localvm = vm;
 
 }
 
 void prepared(JNIEnv *env, jobject thiz, jstring url){
-//    if (!fFJniCallback) {
-//        fFJniCallback = new FFJniCallback(globalVm, env, thiz);
-//    }
-//    if (!zjhMedia) {
-//        zjhMedia = new ZJHMedia(fFJniCallback);
-//        zjhMedia->open(url);
-//    }
+//    localEnv = env;
     FFPlayer::Get()->prepared(env,thiz,url);
 }
 
@@ -30,11 +30,25 @@ void play(JNIEnv *env, jobject thiz){
     FFPlayer::Get()->play(env,thiz);
 }
 
-void FFPlayer::preparedAsync(JNIEnv *env, jobject thiz, jstring url) {
-
+void FFPlayer::preparedAsync(JNIEnv *env,jobject thiz, jstring url) {
+    if (!ffJniCallback) {
+        ffJniCallback = new FFJniCallback(globalVm, env, thiz);
+        fFmpeg = new FFmpeg(ffJniCallback);
+        const char* path = globalEnv->GetStringUTFChars(url,NULL);
+        fFmpeg->prepareAsync(path);
+    }
 }
 
 void FFPlayer::prepared(JNIEnv *env, jobject thiz, jstring url) {
+    if (!ffJniCallback) {
+        ffJniCallback = new FFJniCallback(globalVm, env, thiz);
+        fFmpeg = new FFmpeg(ffJniCallback);
+        const char* path = env->GetStringUTFChars(url,0);
+        fFmpeg->prepare(path);
+
+        delete ffJniCallback;
+        delete fFmpeg;
+    }
 
 }
 

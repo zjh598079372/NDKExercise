@@ -43,7 +43,7 @@ public class VideoActivity extends AppCompatActivity {
                             }
                         });
 //                        nativePlayer.nPlay(getExternalFilesDir("").getAbsolutePath()+"/video.mp4");
-                        nativePlayer.nPlay(getExternalFilesDir("").getAbsolutePath()+"/beijingbeijing.mp3");
+                        nativePlayer.nPrepared(getExternalFilesDir("").getAbsolutePath()+"/test.mkv");
                     }
 
                     @Override
