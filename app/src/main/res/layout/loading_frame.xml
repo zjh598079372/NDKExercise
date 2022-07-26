@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/loadingFrame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="gone">
+    <!--android:background="#55000000"-->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/dialog_background"
+        android:clickable="true"
+        android:gravity="center"
+        android:minWidth="68dp"
+        android:minHeight="68dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!--android:gravity="bottom|center_horizontal"-->
+            <ProgressBar
+                android:id="@+id/imageview_progress_spinner"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:visibility="gone" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="loading.json"
+                app:lottie_loop="true" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/progress_hint"
+            android:layout_width="200px"
+            android:layout_height="28dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:minWidth="68dp"
+            android:text="@string/PleaseWait"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:visibility="visible"
+            android:layout_marginTop="-6dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            />
+    </LinearLayout>
+</LinearLayout>

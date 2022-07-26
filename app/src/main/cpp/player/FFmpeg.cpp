@@ -5,7 +5,7 @@
 #include "FFmpeg.h"
 
 
-FFmpeg::FFmpeg(FFJniCallback *ffJniCallback):ffJniCallback(ffJniCallback) {
+FFmpeg::FFmpeg(FFJniCallback *ffJniCallback) : ffJniCallback(ffJniCallback) {
 
 }
 
@@ -19,21 +19,22 @@ bool FFmpeg::prepare(const char *url) {
     int result;
     int audioIndex = 0;
     result = avformat_open_input(&avFormatContext, url, NULL, NULL);
+    XLOGE("result-->value-->%s,%d", av_err2str(result), result);
     if (result) {
-        ffJniCallback->onErrorListener(THREAD_MAIN,result,strerror(result));
+        ffJniCallback->onErrorListener(THREAD_MAIN, result, av_err2str(result));
         release();
         return false;
     }
-    XLOGE("result-->value-->%s,%d", av_err2str(result),result);
+    XLOGE("result-->value-->%s,%d", av_err2str(result), result);
     result = avformat_find_stream_info(avFormatContext, NULL);
     if (result) {
-        ffJniCallback->onErrorListener(THREAD_MAIN,result,strerror(result));
+        ffJniCallback->onErrorListener(THREAD_MAIN, result, av_err2str(result));
         release();
         return false;
     }
     audioIndex = av_find_best_stream(avFormatContext, AVMEDIA_TYPE_AUDIO, -1, -1, NULL, 0);
     if (audioIndex < 0) {
-        ffJniCallback->onErrorListener(THREAD_MAIN,result,strerror(result));
+        ffJniCallback->onErrorListener(THREAD_MAIN, result, av_err2str(result));
         release();
         return false;
     }
@@ -44,20 +45,20 @@ bool FFmpeg::prepare(const char *url) {
                                            avFormatContext->streams[audioIndex]->codecpar);
     if (result < 0) {
         XLOGE("result-->value-->%s,%d", av_err2str(result), 47);
-        ffJniCallback->onErrorListener(THREAD_MAIN,result,strerror(result));
+        ffJniCallback->onErrorListener(THREAD_MAIN, result, av_err2str(result));
         release();
         return false;
     }
     result = avcodec_open2(avCodecContext, audioCodec, NULL);
     if (result) {
         XLOGE("result-->value-->%s,%d", av_err2str(result), 53);
-        ffJniCallback->onErrorListener(THREAD_MAIN,result,strerror(result));
+        ffJniCallback->onErrorListener(THREAD_MAIN, result, av_err2str(result));
         release();
         return false;
     }
-    XLOGE("result-->value-->%s,%d", av_err2str(result),result);
+    XLOGE("result-->value-->%s,%d", av_err2str(result), result);
     audioTrack = ffJniCallback->initAudioTrack();
-    XLOGE("result-->value-->%s,%d", av_err2str(result),57);
+    XLOGE("result-->value-->%s,%d", av_err2str(result), 57);
     jclass audioTrackClass = ffJniCallback->env->FindClass("android/media/AudioTrack");
     jmethodID writeMethodID = ffJniCallback->env->GetMethodID(audioTrackClass, "write", "([BII)I");
 
@@ -78,18 +79,18 @@ bool FFmpeg::prepare(const char *url) {
                                                 out_sample_rate, in_ch_layout, in_sample_fmt,
                                                 in_sample_rate, 0, NULL);
     if (swrContext == NULL) {
-        ffJniCallback->onErrorListener(THREAD_MAIN,result,strerror(result));
+        ffJniCallback->onErrorListener(THREAD_MAIN, result, av_err2str(result));
         release();
         return false;
     }
 
     result = swr_init(swrContext);
     if (result) {
-        ffJniCallback->onErrorListener(THREAD_MAIN,result,strerror(result));
+        ffJniCallback->onErrorListener(THREAD_MAIN, result, av_err2str(result));
         release();
         return false;
     }
-    XLOGE("result-->value-->%s,%d", av_err2str(result),result);
+    XLOGE("result-->value-->%s,%d", av_err2str(result), result);
     /**
     * 用AudioTrack播放，上面创建完AudioTrack实例，以及调用了play()方法之后，
     * 要调用下面的write(byte[] audioData, int offsetInBytes, int sizeInBytes)进行播放
@@ -98,7 +99,7 @@ bool FFmpeg::prepare(const char *url) {
     //数组的大小 = 一帧的的采样率*通道数*字节数
 //    int bufferSize = AV_CH_LAYOUT_STEREO * avCodecContext->frame_size * out_sample_fmt;
     int outChannelNb = av_get_channel_layout_nb_channels(out_ch_layout);
-    int bufferSize = av_samples_get_buffer_size(NULL, outChannelNb,avCodecContext->frame_size,
+    int bufferSize = av_samples_get_buffer_size(NULL, outChannelNb, avCodecContext->frame_size,
                                                 out_sample_fmt, 0);
     uint8_t *data_buffer = (uint8_t *) malloc(bufferSize);
     jbyteArray byteArray = ffJniCallback->env->NewByteArray(bufferSize);
@@ -121,7 +122,8 @@ bool FFmpeg::prepare(const char *url) {
                                 (const uint8_t **) (avFrame->data), avFrame->nb_samples);
                     memcpy(byte, data_buffer, bufferSize);
                     ffJniCallback->env->ReleaseByteArrayElements(byteArray, byte, JNI_COMMIT);
-                    ffJniCallback->env->CallIntMethod(audioTrack, writeMethodID, byteArray, 0, bufferSize);
+                    ffJniCallback->env->CallIntMethod(audioTrack, writeMethodID, byteArray, 0,
+                                                      bufferSize);
                 }
             }
             index++;

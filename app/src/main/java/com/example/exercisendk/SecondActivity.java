@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.exercisendk.base.BaseActivity;
 import com.example.exercisendk.callNative.NativeBitmap;
 import com.me.support.utils.LogUtil;
 

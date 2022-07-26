@@ -46,6 +46,8 @@ dependencies {
     api 'com.github.JessYanCoding:AndroidAutoSize:v1.2.1'
     /*程序异常闪退捕捉工具*/
     api 'com.simple:spiderman:1.1.3'
+    /*lottie动画库*/
+    api 'com.airbnb.android:lottie:3.4.0'
 
 }
 
