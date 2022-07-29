@@ -77,6 +77,8 @@ add_library( # Sets the name of the library.
         player/zjhMedia/ZJHMedia.cpp
         player/videoPlay/FFPlayer.h
         player/videoPlay/FFPlayer.cpp
+        player/audio/FFAudio.cpp
+        player/audio/FFAudio.h
 
         )
 

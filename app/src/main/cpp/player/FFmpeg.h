@@ -28,12 +28,14 @@ public:
     FFJniCallback* ffJniCallback = 0;
     AVFormatContext *avFormatContext = 0;
     AVCodecContext *avCodecContext = 0;
+    char* url = "";
 public:
-    FFmpeg(FFJniCallback* ffJniCallback);
+    FFmpeg(FFJniCallback* ffJniCallback,const char* url);
     ~FFmpeg();
 
-    bool prepare(const char* url);
-    bool prepareAsync(const char* url);
+    bool prepare();
+    bool prepareAsync();
+    bool prepare(Thread_Mode threadMode);
     void release();
 
 

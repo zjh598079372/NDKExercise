@@ -8,8 +8,6 @@
 
 //JNIEnv *localEnv = NULL;
 
-FFJniCallback *ffJniCallback = NULL;
-FFmpeg *fFmpeg = NULL;
 JavaVM *localvm = NULL;
 
 void FFPlayer::Init(JavaVM *vm, JNIEnv *env) {
@@ -32,19 +30,19 @@ void play(JNIEnv *env, jobject thiz) {
 
 void FFPlayer::preparedAsync(JNIEnv *env, jobject thiz, jstring url) {
     if (!ffJniCallback) {
-        ffJniCallback = new FFJniCallback(globalVm, env, thiz);
-        fFmpeg = new FFmpeg(ffJniCallback);
-        const char *path = globalEnv->GetStringUTFChars(url, NULL);
-        fFmpeg->prepareAsync(path);
+        ffJniCallback = new FFJniCallback(localvm, env, thiz);
+        const char *path = env->GetStringUTFChars(url, NULL);
+        fFmpeg = new FFmpeg(ffJniCallback,path);
+        fFmpeg->prepareAsync();
     }
 }
 
 void FFPlayer::prepared(JNIEnv *env, jobject thiz, jstring url) {
     if (!ffJniCallback) {
-        ffJniCallback = new FFJniCallback(globalVm, env, thiz);
-        fFmpeg = new FFmpeg(ffJniCallback);
+        ffJniCallback = new FFJniCallback(localvm, env, thiz);
         const char *path = env->GetStringUTFChars(url, 0);
-        fFmpeg->prepare(path);
+        fFmpeg = new FFmpeg(ffJniCallback,path);
+        fFmpeg->prepare();
 
 //        delete ffJniCallback;
 //        ffJniCallback = NULL;

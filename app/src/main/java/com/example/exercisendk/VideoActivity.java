@@ -44,11 +44,14 @@ public class VideoActivity extends BaseActivity {
 
                             @Override
                             public void onPrepared() {
+                                LogUtil.e(TAG + "onPrepared-->");
+                                showLoadingFrame(false);
                                 nativePlayer.nPlay();
                             }
                         });
 
-                        nativePlayer.nPrepared(getExternalFilesDir("").getAbsolutePath() + "/test1.mkv");
+                        nativePlayer.nPreparedAsync(getExternalFilesDir("").getAbsolutePath() + "/test.mkv");
+                        showLoadingFrame(true);
                     }
 
                     @Override

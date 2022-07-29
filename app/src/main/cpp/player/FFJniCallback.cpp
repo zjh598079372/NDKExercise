@@ -30,8 +30,8 @@ void FFJniCallback::onErrorListener(Thread_Mode threadMode, int errorCode, char 
             return;
         }
         jstring message = env->NewStringUTF(msg);
-        env->CallVoidMethod(jPlayerObject, errorJmethodID, errorCode, message);
-        env->DeleteLocalRef(message);
+        p_env->CallVoidMethod(jPlayerObject, errorJmethodID, errorCode, message);
+        p_env->DeleteLocalRef(message);
         vm->DetachCurrentThread();
     }
 
@@ -43,7 +43,7 @@ void FFJniCallback::onSuccessListener(Thread_Mode threadMode) {
         env->CallVoidMethod(jPlayerObject, successJmethodID);
     } else if (threadMode == THREAD_CHILD) {
         JNIEnv *p_env = NULL;
-        if (!vm->AttachCurrentThread(&p_env, 0)) {
+        if (vm->AttachCurrentThread(&p_env, 0)!= JNI_OK) {
             XLOGE("Get child thread env error");
         }
         p_env->CallVoidMethod(jPlayerObject, successJmethodID);
@@ -58,8 +58,8 @@ void FFJniCallback::onPerpared(Thread_Mode threadMode) {
     if (threadMode == THREAD_MAIN) {
         env->CallVoidMethod(jPlayerObject, preparedJmethodID);
     } else if (threadMode == THREAD_CHILD) {
-        JNIEnv *p_env = NULL;
-        if (!vm->AttachCurrentThread(&p_env, 0)) {
+        JNIEnv* p_env = NULL;
+        if (vm->AttachCurrentThread(&p_env, 0)!= JNI_OK) {
             XLOGE("Get child thread env error");
         }
         p_env->CallVoidMethod(jPlayerObject, preparedJmethodID);
