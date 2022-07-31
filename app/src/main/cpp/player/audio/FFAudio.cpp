@@ -2,6 +2,7 @@
 // Created by CL002 on 2022-7-28.
 //
 
+
 #include "FFAudio.h"
 
 
@@ -70,6 +71,45 @@ void FFAudio::analysisStream() {
 
 }
 
+void* decodeAudioThread(void* context){
+    FFAudio* ffAudio = (FFAudio*)context;
+
+    while (!ffAudio->isExit){
+        AVPacket* avPacket =  av_packet_alloc();
+        int result = av_read_frame(ffAudio->avFormatContext,avPacket);
+        if(result >= 0){
+            //成功
+            if(avPacket->stream_index == ffAudio->audioIndex){
+
+            } else{
+                //1、下面这个方法做了三件事情
+                // 1.1、解引用数据 data
+                //1.2、销毁结构体内容
+                //1.3、把avPacket设置=null
+                av_packet_free(&avPacket);
+            }
+        } else{
+            //失败
+            av_packet_free(&avPacket);
+        }
+    }
+    return 0;
+}
+
+void FFAudio::play() {
+//1、一个线程去解码packet
+pthread_t* decodeAudioTid;
+pthread_create(decodeAudioTid,NULL,decodeAudioThread, this);
+
+//2、一个线程去播放
+
+
+}
+
+void FFAudio::setStop(bool isStop) {
+    isExit = isStop;
+}
+
 void FFAudio::release(){
     if(avCodecContext){
         avcodec_close(avCodecContext);
@@ -84,3 +124,5 @@ void FFAudio::release(){
     }
 
 }
+
+

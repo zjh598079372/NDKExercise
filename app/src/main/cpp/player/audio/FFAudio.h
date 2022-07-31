@@ -7,6 +7,7 @@
 #include "../FFJniCallback.h"
 #include <XLog.h>
 #include "../ConstDefine.h"
+#include <pthread.h>
 
 extern "C" {
 #include "../../include/ffmpeg/libavformat/avformat.h"
@@ -15,7 +16,7 @@ extern "C" {
 
 
 class FFAudio {
-private:
+public:
     int audioIndex = 0;
     FFJniCallback *ffJniCallback = NULL;
     AVFormatContext *avFormatContext = NULL;
@@ -23,6 +24,8 @@ private:
 
     AVCodecContext *avCodecContext = NULL;
     SwrContext *swrContext = NULL;
+    bool isExit = false;
+
 public:
     FFAudio(int index, FFJniCallback *ffJniCallback, AVFormatContext *avFormatContext,
             Thread_Mode threadMode);
@@ -30,7 +33,10 @@ public:
     ~FFAudio();
 
     void analysisStream();
+    void play();
     void release();
+
+    void setStop(bool isStop);
 
 };
 

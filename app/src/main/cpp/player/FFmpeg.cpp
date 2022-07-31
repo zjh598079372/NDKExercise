@@ -76,7 +76,8 @@ bool FFmpeg::prepare(Thread_Mode threadMode) {
         release();
         return false;
     }
-    new FFAudio(audioIndex,ffJniCallback,avFormatContext,threadMode);
+    ffAudio = new FFAudio(audioIndex,ffJniCallback,avFormatContext,threadMode);
+    ffAudio->analysisStream();
     ffJniCallback->onPerpared(threadMode);
 //    AVCodec *audioCodec = avcodec_find_decoder(
 //            avFormatContext->streams[audioIndex]->codecpar->codec_id);
@@ -189,6 +190,12 @@ bool FFmpeg::prepare(Thread_Mode threadMode) {
 //    }
 
     return true;
+}
+
+void FFmpeg::play() {
+    if(ffAudio){
+        ffAudio->play();
+    }
 }
 
 void FFmpeg::release() {

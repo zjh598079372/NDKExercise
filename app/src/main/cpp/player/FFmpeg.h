@@ -10,6 +10,8 @@
 #include <jni.h>
 #include "../include/XLog.h"
 #include "ConstDefine.h"
+#include "audio/FFAudio.h"
+
 extern "C"{
 #include "../include/ffmpeg/libavformat/avformat.h"
 #include "../include/ffmpeg/libavcodec/avcodec.h"
@@ -26,6 +28,7 @@ class FFmpeg {
 public:
     FFmpeg* pFFmpge = 0;
     FFJniCallback* ffJniCallback = 0;
+    FFAudio *ffAudio = 0;
     AVFormatContext *avFormatContext = 0;
     AVCodecContext *avCodecContext = 0;
     char* url = "";
@@ -36,6 +39,7 @@ public:
     bool prepare();
     bool prepareAsync();
     bool prepare(Thread_Mode threadMode);
+    void play();
     void release();
 
 
@@ -44,6 +48,8 @@ public:
     AVPacket *avPacket = 0;
 
     jobject initAudioTrack(JNIEnv *env);
+
+
 };
 
 

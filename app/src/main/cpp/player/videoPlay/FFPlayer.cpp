@@ -54,5 +54,8 @@ void FFPlayer::prepared(JNIEnv *env, jobject thiz, jstring url) {
 
 void FFPlayer::play(JNIEnv *env, jobject thiz) {
 
+    if(fFmpeg){
+        fFmpeg->play();
+    }
 }
 

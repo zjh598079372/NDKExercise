@@ -79,6 +79,8 @@ add_library( # Sets the name of the library.
         player/videoPlay/FFPlayer.cpp
         player/audio/FFAudio.cpp
         player/audio/FFAudio.h
+        player/queue/PacketQueue.cpp
+        player/queue/PacketQueue.h
 
         )
 
