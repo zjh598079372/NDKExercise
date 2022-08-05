@@ -111,4 +111,5 @@ target_link_libraries(
         avutil
         swresample
         swscale
+        OpenSLES
         ${log-lib})

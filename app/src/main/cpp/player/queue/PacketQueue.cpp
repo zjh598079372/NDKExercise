@@ -11,7 +11,13 @@ PacketQueue::PacketQueue() {
 }
 
 PacketQueue::~PacketQueue(){
-
+    if (avPacketQueue){
+        clear();
+        delete avPacketQueue;
+        avPacketQueue = NULL;
+    }
+    pthread_mutex_destroy(&pMutex);
+    pthread_cond_destroy(&pCond);
 }
 
 void PacketQueue::push(AVPacket *avPacket) {
@@ -34,5 +40,10 @@ AVPacket* PacketQueue::pop() {
 }
 
 void PacketQueue::clear() {
+    while (avPacketQueue->size() > 0){
+        AVPacket* avPacket = avPacketQueue->front();
+        avPacketQueue->pop();
+        av_packet_free(&avPacket);
+    }
 
 }

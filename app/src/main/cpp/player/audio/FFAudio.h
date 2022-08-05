@@ -7,7 +7,10 @@
 #include "../FFJniCallback.h"
 #include <XLog.h>
 #include "../ConstDefine.h"
+#include "../queue/PacketQueue.h"
 #include <pthread.h>
+#include <SLES/OpenSLES.h>
+#include <SLES/OpenSLES_Android.h>
 
 extern "C" {
 #include "../../include/ffmpeg/libavformat/avformat.h"
@@ -20,6 +23,7 @@ public:
     int audioIndex = 0;
     FFJniCallback *ffJniCallback = NULL;
     AVFormatContext *avFormatContext = NULL;
+    PacketQueue* packetQueue = NULL;
     Thread_Mode threadMode;
 
     AVCodecContext *avCodecContext = NULL;
@@ -38,6 +42,11 @@ public:
 
     void setStop(bool isStop);
 
+    void initCreateOpenSLES();
+
+    int resampleAudio();
+
+    uint8_t *resampleOutBuffer;
 };
 
 
