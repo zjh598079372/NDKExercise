@@ -12,7 +12,7 @@ FFAudio::FFAudio(int index, FFJniCallback *ffJniCallback,
     this->avFormatContext = avFormatContext;
     this->threadMode = threadMode;
     this->packetQueue = new PacketQueue();
-
+    this->ffPlayStatus = new FFPlayStatus();
 }
 
 
@@ -28,18 +28,18 @@ void FFAudio::analysisStream() {
     result = avcodec_parameters_to_context(avCodecContext,
                                            avFormatContext->streams[audioIndex]->codecpar);
     if (result < 0) {
-        XLOGE("result-->value-->%s,%d", av_err2str(result), 47);
+        XLOGE("FFAudio-->value-->%s,%d", av_err2str(result), 47);
         ffJniCallback->onErrorListener(threadMode, result, av_err2str(result));
 
         return;
     }
     result = avcodec_open2(avCodecContext, audioCodec, NULL);
     if (result) {
-        XLOGE("result-->value-->%s,%d", av_err2str(result), 53);
+        XLOGE("FFAudio-->value-->%s,%d", av_err2str(result), 53);
         ffJniCallback->onErrorListener(threadMode, result, av_err2str(result));
         return;
     }
-    XLOGE("result-->value-->%s,%d", av_err2str(result), result);
+    XLOGE("FFAudio-->value-->%s,%d", av_err2str(result), result);
 
     /**
      * 音频重采样
@@ -68,14 +68,13 @@ void FFAudio::analysisStream() {
         return;
     }
     resampleOutBuffer = (uint8_t *) malloc(avCodecContext->frame_size * 2 * 2);
-    XLOGE("result-->value-->%s,%d", av_err2str(result), result);
+    XLOGE("FFAudio-->value-->%s,%d", av_err2str(result), result);
 
 }
 
 void *decodeAudioThread(void *context) {
     FFAudio *ffAudio = (FFAudio *) context;
-
-    while (!ffAudio->isExit) {
+    while (ffAudio->ffPlayStatus && !ffAudio->ffPlayStatus->isExit) {
         AVPacket *avPacket = av_packet_alloc();
         int result = av_read_frame(ffAudio->avFormatContext, avPacket);
         if (result >= 0) {
@@ -105,12 +104,12 @@ void *playThread(void *context) {
 
 void FFAudio::play() {
 //1、一个线程去解码packet
-    pthread_t decodeAudioTid;
+    pthread_t decodeAudioTid = NULL;
     pthread_create(&decodeAudioTid, NULL, decodeAudioThread, this);
     pthread_detach(decodeAudioTid);
 
 //2、一个线程去播放
-    pthread_t playTid;
+    pthread_t playTid= NULL;
     pthread_create(&playTid, NULL, playThread, this);
     pthread_detach(playTid);
 
@@ -138,8 +137,17 @@ void FFAudio::release() {
         swrContext = NULL;
     }
 
+    if(pPacket){
+        av_packet_free(&pPacket);
+    }
+
     if (packetQueue) {
         delete packetQueue;
+    }
+
+    if(ffPlayStatus){
+        delete ffPlayStatus;
+        ffPlayStatus = NULL;
     }
 
 }
@@ -233,10 +241,10 @@ void FFAudio::initCreateOpenSLES() {
 
 int FFAudio::resampleAudio() {
     int dataSize = 0;
-    AVPacket *pPacket = NULL;
+
     AVFrame *pFrame = av_frame_alloc();
 
-    while (1) {
+    while (ffPlayStatus && !ffPlayStatus->isExit) {
         pPacket = packetQueue->pop();
         // Packet 包，压缩的数据，解码成 pcm 数据
         int codecSendPacketRes = avcodec_send_packet(avCodecContext, pPacket);

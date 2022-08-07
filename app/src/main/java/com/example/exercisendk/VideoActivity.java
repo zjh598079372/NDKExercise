@@ -33,6 +33,7 @@ public class VideoActivity extends BaseActivity {
                             @Override
                             public void onError(int type, String message) {
                                 LogUtil.e(TAG + "type-->" + type + "\t+message-->" + message);
+                                showLoadingFrame(false);
                                 showToast(message);
 
                             }
@@ -51,7 +52,8 @@ public class VideoActivity extends BaseActivity {
                         });
 
                         nativePlayer.nPreparedAsync(getExternalFilesDir("").getAbsolutePath() + "/test.mkv");
-                        showLoadingFrame(true);
+//                        nativePlayer.nPrepared(getExternalFilesDir("").getAbsolutePath() + "/test1.mkv");
+//                        showLoadingFrame(true);
                     }
 
                     @Override

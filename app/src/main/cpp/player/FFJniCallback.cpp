@@ -29,7 +29,7 @@ void FFJniCallback::onErrorListener(Thread_Mode threadMode, int errorCode, char 
             XLOGE("Get child thread env error");
             return;
         }
-        jstring message = env->NewStringUTF(msg);
+        jstring message = p_env->NewStringUTF(msg);
         p_env->CallVoidMethod(jPlayerObject, errorJmethodID, errorCode, message);
         p_env->DeleteLocalRef(message);
         vm->DetachCurrentThread();

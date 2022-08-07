@@ -29,7 +29,7 @@ void PacketQueue::push(AVPacket *avPacket) {
 
 AVPacket* PacketQueue::pop() {
     pthread_mutex_lock(&pMutex);
-    while (avPacketQueue->size() <= 0){
+    while (avPacketQueue->empty()){
         pthread_cond_wait(&pCond,&pMutex);
     }
     AVPacket* avPacket = avPacketQueue->front();

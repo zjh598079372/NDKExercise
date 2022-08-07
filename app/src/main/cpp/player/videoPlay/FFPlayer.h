@@ -24,10 +24,14 @@ public:
         return &ffPlayer;
     }
 
+    ~FFPlayer();
+    void release();
+
     void Init(JavaVM *vm, JNIEnv *env);
     void play(JNIEnv *env, jobject thiz);
     void prepared(JNIEnv *env,jobject thiz, jstring url);
     void preparedAsync(JNIEnv *env,jobject thiz, jstring url);
+
 
 };
 

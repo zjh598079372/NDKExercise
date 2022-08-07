@@ -8,6 +8,7 @@
 #include <XLog.h>
 #include "../ConstDefine.h"
 #include "../queue/PacketQueue.h"
+#include "../playStatus/FFPlayStatus.h"
 #include <pthread.h>
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
@@ -25,6 +26,7 @@ public:
     AVFormatContext *avFormatContext = NULL;
     PacketQueue* packetQueue = NULL;
     Thread_Mode threadMode;
+    FFPlayStatus* ffPlayStatus = NULL;
 
     AVCodecContext *avCodecContext = NULL;
     SwrContext *swrContext = NULL;
@@ -47,6 +49,7 @@ public:
     int resampleAudio();
 
     uint8_t *resampleOutBuffer;
+    AVPacket *pPacket = NULL;
 };
 
 

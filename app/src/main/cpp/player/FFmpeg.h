@@ -31,7 +31,7 @@ public:
     FFAudio *ffAudio = 0;
     AVFormatContext *avFormatContext = 0;
     AVCodecContext *avCodecContext = 0;
-    char* url = "";
+    char* url = 0;
 public:
     FFmpeg(FFJniCallback* ffJniCallback,const char* url);
     ~FFmpeg();
@@ -40,6 +40,7 @@ public:
     bool prepareAsync();
     bool prepare(Thread_Mode threadMode);
     void play();
+    void exitPlay();
     void release();
 
 

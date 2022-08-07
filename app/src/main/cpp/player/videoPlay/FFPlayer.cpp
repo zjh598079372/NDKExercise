@@ -29,25 +29,29 @@ void play(JNIEnv *env, jobject thiz) {
 }
 
 void FFPlayer::preparedAsync(JNIEnv *env, jobject thiz, jstring url) {
-    if (!ffJniCallback) {
-        ffJniCallback = new FFJniCallback(localvm, env, thiz);
-        const char *path = env->GetStringUTFChars(url, NULL);
-        fFmpeg = new FFmpeg(ffJniCallback,path);
-        fFmpeg->prepareAsync();
+    if(fFmpeg){
+        fFmpeg->exitPlay();
+        if(ffJniCallback){
+            ffJniCallback->onPerpared(THREAD_MAIN);
+        }
+    } else{
+        if (!ffJniCallback) {
+            ffJniCallback = new FFJniCallback(localvm, env, thiz);
+            const char *path = env->GetStringUTFChars(url, NULL);
+            fFmpeg = new FFmpeg(ffJniCallback,path);
+            fFmpeg->prepareAsync();
+        }
     }
+
 }
 
 void FFPlayer::prepared(JNIEnv *env, jobject thiz, jstring url) {
+    release();
     if (!ffJniCallback) {
         ffJniCallback = new FFJniCallback(localvm, env, thiz);
         const char *path = env->GetStringUTFChars(url, 0);
         fFmpeg = new FFmpeg(ffJniCallback,path);
         fFmpeg->prepare();
-
-//        delete ffJniCallback;
-//        ffJniCallback = NULL;
-//        delete fFmpeg;
-//        fFmpeg = NULL;
     }
 
 }
@@ -59,3 +63,19 @@ void FFPlayer::play(JNIEnv *env, jobject thiz) {
     }
 }
 
+void FFPlayer::release() {
+
+    if(fFmpeg){
+        delete fFmpeg;
+        fFmpeg = NULL;
+    }
+
+    if(ffJniCallback){
+        delete ffJniCallback;
+        ffJniCallback = NULL;
+    }
+}
+
+FFPlayer::~FFPlayer(){
+    release();
+}
