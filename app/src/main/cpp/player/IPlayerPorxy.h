@@ -10,7 +10,7 @@
 #include "FFJniCallback.h"
 #include <string>
 #include "../include/XLog.h"
-#include "zjhMedia/ZJHMedia.h"
+
 
 extern "C"{
 #include "../include/ffmpeg/libavformat/avformat.h"
@@ -22,7 +22,6 @@ public:
     AVFormatContext* avFormatContext = NULL;
     IPlayer *iPlayer = 0;
     FFJniCallback* fFJniCallback = 0;
-    ZJHMedia* zjhMedia = 0;
     JavaVM* globalVm = 0;
     AVCodecContext *avCodecContext = NULL;
     AVPacket *avPacket = NULL;

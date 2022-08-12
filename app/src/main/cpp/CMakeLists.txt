@@ -73,10 +73,10 @@ add_library( # Sets the name of the library.
         player/demux/IDemux.cpp
         player/demux/FFDemux.h
         player/demux/FFDemux.cpp
-        player/zjhMedia/ZJHMedia.h
-        player/zjhMedia/ZJHMedia.cpp
         player/videoPlay/FFPlayer.h
         player/videoPlay/FFPlayer.cpp
+        player/media/FFMedia.cpp
+        player/media/FFMedia.h
         player/audio/FFAudio.cpp
         player/audio/FFAudio.h
         player/queue/PacketQueue.cpp

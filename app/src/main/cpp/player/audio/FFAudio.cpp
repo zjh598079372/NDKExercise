@@ -6,41 +6,16 @@
 #include "FFAudio.h"
 
 FFAudio::FFAudio(int index, FFJniCallback *ffJniCallback,
-                 AVFormatContext *avFormatContext, Thread_Mode threadMode) {
-    this->audioIndex = index;
-    this->ffJniCallback = ffJniCallback;
-    this->avFormatContext = avFormatContext;
-    this->threadMode = threadMode;
+                 AVFormatContext *avFormatContext, Thread_Mode threadMode)
+        : FFMedia(index, ffJniCallback, avFormatContext, threadMode) {
     this->packetQueue = new PacketQueue();
-    this->ffPlayStatus = new FFPlayStatus();
 }
 
 
-FFAudio::~FFAudio() {
-    release();
-}
 
-void FFAudio::analysisStream() {
+
+void FFAudio::privateAnalysisStream() {
     int result = 0;
-    AVCodec *audioCodec = avcodec_find_decoder(
-            avFormatContext->streams[audioIndex]->codecpar->codec_id);
-    avCodecContext = avcodec_alloc_context3(audioCodec);
-    result = avcodec_parameters_to_context(avCodecContext,
-                                           avFormatContext->streams[audioIndex]->codecpar);
-    if (result < 0) {
-        XLOGE("FFAudio-->value-->%s,%d", av_err2str(result), 47);
-        ffJniCallback->onErrorListener(threadMode, result, av_err2str(result));
-
-        return;
-    }
-    result = avcodec_open2(avCodecContext, audioCodec, NULL);
-    if (result) {
-        XLOGE("FFAudio-->value-->%s,%d", av_err2str(result), 53);
-        ffJniCallback->onErrorListener(threadMode, result, av_err2str(result));
-        return;
-    }
-    XLOGE("FFAudio-->value-->%s,%d", av_err2str(result), result);
-
     /**
      * 音频重采样
      * struct SwrContext *swr_alloc_set_opts(struct SwrContext *s,
@@ -69,7 +44,6 @@ void FFAudio::analysisStream() {
     }
     resampleOutBuffer = (uint8_t *) malloc(avCodecContext->frame_size * 2 * 2);
     XLOGE("FFAudio-->value-->%s,%d", av_err2str(result), result);
-
 }
 
 void *decodeAudioThread(void *context) {
@@ -79,7 +53,7 @@ void *decodeAudioThread(void *context) {
         int result = av_read_frame(ffAudio->avFormatContext, avPacket);
         if (result >= 0) {
             //成功
-            if (avPacket->stream_index == ffAudio->audioIndex) {
+            if (avPacket->stream_index == ffAudio->index) {
                 ffAudio->packetQueue->push(avPacket);
             } else {
                 //1、下面这个方法做了三件事情
@@ -109,23 +83,15 @@ void FFAudio::play() {
     pthread_detach(decodeAudioTid);
 
 //2、一个线程去播放
-    pthread_t playTid= NULL;
+    pthread_t playTid = NULL;
     pthread_create(&playTid, NULL, playThread, this);
     pthread_detach(playTid);
 
-
 }
 
-void FFAudio::setStop(bool isStop) {
-    isExit = isStop;
-}
 
 void FFAudio::release() {
-    if (avCodecContext) {
-        avcodec_close(avCodecContext);
-        avcodec_free_context(&avCodecContext);
-        avCodecContext = NULL;
-    }
+
     if (resampleOutBuffer) {
         free(resampleOutBuffer);
         resampleOutBuffer = NULL;
@@ -137,7 +103,7 @@ void FFAudio::release() {
         swrContext = NULL;
     }
 
-    if(pPacket){
+    if (pPacket) {
         av_packet_free(&pPacket);
     }
 
@@ -145,10 +111,6 @@ void FFAudio::release() {
         delete packetQueue;
     }
 
-    if(ffPlayStatus){
-        delete ffPlayStatus;
-        ffPlayStatus = NULL;
-    }
 
 }
 
@@ -173,7 +135,7 @@ void FFAudio::initCreateOpenSLES() {
      */
     //1、创建引擎接口对象
     SLObjectItf pEngine = NULL;
-    SLEngineItf slEngineItf ;
+    SLEngineItf slEngineItf;
     slCreateEngine(&pEngine, 0, NULL, 0, NULL, NULL);
     (*pEngine)->Realize(pEngine, SL_BOOLEAN_FALSE);
     (*pEngine)->GetInterface(pEngine, SL_IID_ENGINE, &slEngineItf);
@@ -193,10 +155,11 @@ void FFAudio::initCreateOpenSLES() {
     SLboolean sLboolean[1] = {SL_BOOLEAN_FALSE};
     SLEnvironmentalReverbItf slEnvironmentalReverbItf = NULL;
     (*slEngineItf)->CreateOutputMix(slEngineItf, &pMix, 1, slInterfaceId, sLboolean);
-    (*pMix)->Realize(pMix,SL_BOOLEAN_FALSE);
-    (*pMix)->GetInterface(pMix,SL_IID_ENVIRONMENTALREVERB,&slEnvironmentalReverbItf);
+    (*pMix)->Realize(pMix, SL_BOOLEAN_FALSE);
+    (*pMix)->GetInterface(pMix, SL_IID_ENVIRONMENTALREVERB, &slEnvironmentalReverbItf);
     SLEnvironmentalReverbSettings slEnvironmentalReverbSettings = SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;
-    (*slEnvironmentalReverbItf)->SetEnvironmentalReverbProperties(slEnvironmentalReverbItf,&slEnvironmentalReverbSettings);
+    (*slEnvironmentalReverbItf)->SetEnvironmentalReverbProperties(slEnvironmentalReverbItf,
+                                                                  &slEnvironmentalReverbSettings);
 
     //3、创建播放器
 
@@ -213,19 +176,22 @@ void FFAudio::initCreateOpenSLES() {
      */
     SLObjectItf pPlayer = NULL;
     SLPlayItf pPlayItf = NULL;
-    SLDataLocator_AndroidSimpleBufferQueue simpleBufferQueue = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE,2};
-    SLDataFormat_PCM pFormat = {SL_DATAFORMAT_PCM,2,SL_SAMPLINGRATE_44_1,SL_PCMSAMPLEFORMAT_FIXED_16,
-                                SL_PCMSAMPLEFORMAT_FIXED_16,SL_SPEAKER_FRONT_LEFT|SL_SPEAKER_FRONT_RIGHT,
+    SLDataLocator_AndroidSimpleBufferQueue simpleBufferQueue = {
+            SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
+    SLDataFormat_PCM pFormat = {SL_DATAFORMAT_PCM, 2, SL_SAMPLINGRATE_44_1,
+                                SL_PCMSAMPLEFORMAT_FIXED_16,
+                                SL_PCMSAMPLEFORMAT_FIXED_16,
+                                SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT,
                                 SL_BYTEORDER_LITTLEENDIAN};
-    SLDataSource pAudioSrc = {&simpleBufferQueue,&pFormat};
-    SLDataLocator_OutputMix  outputMix = {SL_DATALOCATOR_OUTPUTMIX,pMix};
-    SLDataSink pAudioSnk = {&outputMix,NULL};
+    SLDataSource pAudioSrc = {&simpleBufferQueue, &pFormat};
+    SLDataLocator_OutputMix outputMix = {SL_DATALOCATOR_OUTPUTMIX, pMix};
+    SLDataSink pAudioSnk = {&outputMix, NULL};
     SLInterfaceID interfaceIds[3] = {SL_IID_BUFFERQUEUE, SL_IID_VOLUME, SL_IID_PLAYBACKRATE};
     SLboolean interfaceRequired[3] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE};
-    (*slEngineItf)->CreateAudioPlayer(slEngineItf,&pPlayer,&pAudioSrc,&pAudioSnk,3,
-                                      interfaceIds,interfaceRequired);
-    (*pPlayer)->Realize(pPlayer,SL_BOOLEAN_FALSE);
-    (*pPlayer)->GetInterface(pPlayer,SL_IID_PLAY,&pPlayItf);
+    (*slEngineItf)->CreateAudioPlayer(slEngineItf, &pPlayer, &pAudioSrc, &pAudioSnk, 3,
+                                      interfaceIds, interfaceRequired);
+    (*pPlayer)->Realize(pPlayer, SL_BOOLEAN_FALSE);
+    (*pPlayer)->GetInterface(pPlayer, SL_IID_PLAY, &pPlayItf);
     // 3.4 设置缓存队列和回调函数
     SLAndroidSimpleBufferQueueItf playerBufferQueue;
     (*pPlayer)->GetInterface(pPlayer, SL_IID_BUFFERQUEUE, &playerBufferQueue);
@@ -271,6 +237,12 @@ int FFAudio::resampleAudio() {
     av_packet_free(&pPacket);
     av_frame_free(&pFrame);
     return dataSize;
+}
+
+FFAudio::~FFAudio() {
+    FFMedia::~FFMedia();
+    release();
+
 }
 
 

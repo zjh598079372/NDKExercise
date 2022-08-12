@@ -4,11 +4,13 @@
 
 #ifndef EXERCISENDK_FFAUDIO_H
 #define EXERCISENDK_FFAUDIO_H
+
 #include "../FFJniCallback.h"
 #include <XLog.h>
 #include "../ConstDefine.h"
 #include "../queue/PacketQueue.h"
 #include "../playStatus/FFPlayStatus.h"
+#include "../media/FFMedia.h"
 #include <pthread.h>
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
@@ -19,17 +21,13 @@ extern "C" {
 };
 
 
-class FFAudio {
+class FFAudio : public FFMedia {
 public:
-    int audioIndex = 0;
-    FFJniCallback *ffJniCallback = NULL;
-    AVFormatContext *avFormatContext = NULL;
-    PacketQueue* packetQueue = NULL;
-    Thread_Mode threadMode;
-    FFPlayStatus* ffPlayStatus = NULL;
 
-    AVCodecContext *avCodecContext = NULL;
+    PacketQueue *packetQueue = NULL;
     SwrContext *swrContext = NULL;
+    uint8_t *resampleOutBuffer;
+    AVPacket *pPacket = NULL;
     bool isExit = false;
 
 public:
@@ -38,18 +36,20 @@ public:
 
     ~FFAudio();
 
-    void analysisStream();
-    void play();
-    void release();
+    virtual void privateAnalysisStream();
 
-    void setStop(bool isStop);
+    virtual void play();
+
+    void audioAnalysisStream();
+
+
+    void release();
 
     void initCreateOpenSLES();
 
     int resampleAudio();
 
-    uint8_t *resampleOutBuffer;
-    AVPacket *pPacket = NULL;
+
 };
 
 
