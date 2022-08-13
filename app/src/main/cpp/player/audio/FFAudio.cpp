@@ -5,16 +5,13 @@
 
 #include "FFAudio.h"
 
-FFAudio::FFAudio(int index, FFJniCallback *ffJniCallback,
-                 AVFormatContext *avFormatContext, Thread_Mode threadMode)
-        : FFMedia(index, ffJniCallback, avFormatContext, threadMode) {
+FFAudio::FFAudio(int index, FFJniCallback *ffJniCallback, FFPlayStatus *ffPlayStatus)
+        : FFMedia(index, ffJniCallback, ffPlayStatus) {
     this->packetQueue = new PacketQueue();
 }
 
 
-
-
-void FFAudio::privateAnalysisStream() {
+void FFAudio::privateAnalysisStream(Thread_Mode threadMode) {
     int result = 0;
     /**
      * 音频重采样
@@ -46,30 +43,6 @@ void FFAudio::privateAnalysisStream() {
     XLOGE("FFAudio-->value-->%s,%d", av_err2str(result), result);
 }
 
-void *decodeAudioThread(void *context) {
-    FFAudio *ffAudio = (FFAudio *) context;
-    while (ffAudio->ffPlayStatus && !ffAudio->ffPlayStatus->isExit) {
-        AVPacket *avPacket = av_packet_alloc();
-        int result = av_read_frame(ffAudio->avFormatContext, avPacket);
-        if (result >= 0) {
-            //成功
-            if (avPacket->stream_index == ffAudio->index) {
-                ffAudio->packetQueue->push(avPacket);
-            } else {
-                //1、下面这个方法做了三件事情
-                // 1.1、解引用数据 data
-                //1.2、销毁结构体内容
-                //1.3、把avPacket设置=null
-                av_packet_free(&avPacket);
-            }
-        } else {
-            //失败
-            av_packet_free(&avPacket);
-        }
-    }
-    return 0;
-}
-
 void *playThread(void *context) {
     FFAudio *ffAudio = (FFAudio *) context;
     ffAudio->initCreateOpenSLES();
@@ -77,12 +50,8 @@ void *playThread(void *context) {
 }
 
 void FFAudio::play() {
-//1、一个线程去解码packet
-    pthread_t decodeAudioTid = NULL;
-    pthread_create(&decodeAudioTid, NULL, decodeAudioThread, this);
-    pthread_detach(decodeAudioTid);
 
-//2、一个线程去播放
+//1、一个线程去播放
     pthread_t playTid = NULL;
     pthread_create(&playTid, NULL, playThread, this);
     pthread_detach(playTid);

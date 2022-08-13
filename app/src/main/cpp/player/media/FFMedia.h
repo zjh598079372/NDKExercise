@@ -18,25 +18,27 @@ class FFMedia {
 public:
     int index = 0;
     FFJniCallback *ffJniCallback = NULL;
-    AVFormatContext *avFormatContext = NULL;
-    Thread_Mode threadMode;
-    FFPlayStatus *ffPlayStatus = NULL;
     AVCodecContext *avCodecContext = NULL;
+    FFPlayStatus *ffPlayStatus = NULL;
 
     bool isExit = false;
+    int duration = 0;
+    AVRational time_base;
+
 
 public:
 
-    FFMedia(int index, FFJniCallback *ffJniCallback, AVFormatContext *avFormatContext,
-            Thread_Mode threadMode);
+    FFMedia(int index, FFJniCallback *ffJniCallback, FFPlayStatus *ffPlayStatus);
 
     ~FFMedia();
 
-    void analysisStream();
+    void analysisStream(AVFormatContext *avFormatContext,
+                        Thread_Mode threadMode);
 
-    virtual void privateAnalysisStream() = 0;
+    virtual void privateAnalysisStream(Thread_Mode threadMode) = 0;
 
-    void publicAnalysisStream();
+    void publicAnalysisStream(AVFormatContext *avFormatContext,
+                              Thread_Mode threadMode);
 
     virtual void play() = 0;
 

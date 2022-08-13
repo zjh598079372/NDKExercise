@@ -31,17 +31,13 @@ public:
     bool isExit = false;
 
 public:
-    FFAudio(int index, FFJniCallback *ffJniCallback, AVFormatContext *avFormatContext,
-            Thread_Mode threadMode);
+    FFAudio(int index, FFJniCallback *ffJniCallback, FFPlayStatus *ffPlayStatus);
 
     ~FFAudio();
 
-    virtual void privateAnalysisStream();
+    virtual void privateAnalysisStream(Thread_Mode threadMode);
 
     virtual void play();
-
-    void audioAnalysisStream();
-
 
     void release();
 

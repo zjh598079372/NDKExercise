@@ -29,6 +29,7 @@ public:
     FFmpeg* pFFmpge = 0;
     FFJniCallback* ffJniCallback = 0;
     FFAudio *ffAudio = 0;
+    FFPlayStatus *ffPlayStatus = NULL;
     AVFormatContext *avFormatContext = 0;
     AVCodecContext *avCodecContext = 0;
     char* url = 0;

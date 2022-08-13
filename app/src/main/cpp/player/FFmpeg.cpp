@@ -11,6 +11,7 @@ FFmpeg::FFmpeg(FFJniCallback *ffJniCallback, const char *path) : ffJniCallback(f
     //复制一个url,免得外面异步调用时把url销毁了
     this->url = (char *) (malloc(strlen(path) + 1));
     memcpy(this->url, path, strlen(path) + 1);
+    this->ffPlayStatus = new FFPlayStatus();
 }
 
 FFmpeg::~FFmpeg() {
@@ -38,8 +39,8 @@ jobject FFmpeg::initAudioTrack(JNIEnv *env) {
 
 }
 
-void* audioThread(void* arg){
-    FFmpeg* fFmpeg = (FFmpeg *)(arg);
+void *audioThread(void *arg) {
+    FFmpeg *fFmpeg = (FFmpeg *) (arg);
     XLOGE("audioThread----->");
     fFmpeg->prepare(Thread_Mode::THREAD_CHILD);
     return 0;
@@ -47,7 +48,7 @@ void* audioThread(void* arg){
 
 bool FFmpeg::prepareAsync() {
     pthread_t audioPthread = NULL;
-    pthread_create(&audioPthread,NULL,audioThread,this);
+    pthread_create(&audioPthread, NULL, audioThread, this);
     pthread_detach(audioPthread);
     return true;
 }
@@ -77,17 +78,47 @@ bool FFmpeg::prepare(Thread_Mode threadMode) {
         release();
         return false;
     }
-    ffAudio = new FFAudio(audioIndex,ffJniCallback,avFormatContext,threadMode);
-    ffAudio->analysisStream();
-    if(ffJniCallback){
+    ffAudio = new FFAudio(audioIndex, ffJniCallback, ffPlayStatus);
+    ffAudio->analysisStream(avFormatContext, threadMode);
+    if (ffJniCallback) {
         ffJniCallback->onPerpared(threadMode);
     }
 
     return true;
 }
 
+
+void *decodeThread(void *context) {
+    FFmpeg *fFmpeg = (FFmpeg *) context;
+    while (fFmpeg->ffPlayStatus && !fFmpeg->ffPlayStatus->isExit) {
+        AVPacket *avPacket = av_packet_alloc();
+        int result = av_read_frame(fFmpeg->avFormatContext, avPacket);
+        if (result >= 0) {
+            //成功
+            if (avPacket->stream_index == fFmpeg->ffAudio->index) {
+                fFmpeg->ffAudio->packetQueue->push(avPacket);
+            } else {
+                //1、下面这个方法做了三件事情
+                // 1.1、解引用数据 data
+                //1.2、销毁结构体内容
+                //1.3、把avPacket设置=null
+                av_packet_free(&avPacket);
+            }
+        } else {
+            //失败
+            av_packet_free(&avPacket);
+        }
+    }
+    return 0;
+}
+
 void FFmpeg::play() {
-    if(ffAudio){
+    //1、一个线程去解码packet
+    pthread_t decodeAudioTid = NULL;
+    pthread_create(&decodeAudioTid, NULL, decodeThread, this);
+    pthread_detach(decodeAudioTid);
+
+    if (ffAudio) {
         ffAudio->play();
     }
 }
@@ -112,22 +143,22 @@ void FFmpeg::release() {
         avFormatContext = 0;
     }
 
-    if(ffAudio){
+    if (ffAudio) {
         delete ffAudio;
         ffAudio = NULL;
     }
 
     avformat_network_deinit();
 
-    if(url){
+    if (url) {
         free(url);
         url = NULL;
     }
 }
 
 void FFmpeg::exitPlay() {
-    if(ffAudio && ffAudio->ffPlayStatus){
-        ffAudio->ffPlayStatus->isExit = !ffAudio->ffPlayStatus->isExit;
+    if (ffPlayStatus) {
+        ffPlayStatus->isExit = !ffPlayStatus->isExit;
     }
 
 }
