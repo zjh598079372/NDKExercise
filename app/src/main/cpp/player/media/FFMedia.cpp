@@ -20,7 +20,7 @@ FFMedia::~FFMedia() {
 void FFMedia::analysisStream(AVFormatContext *avFormatContext,
                              Thread_Mode threadMode) {
     publicAnalysisStream(avFormatContext, threadMode);
-    privateAnalysisStream(threadMode);
+    privateAnalysisStream(avFormatContext,threadMode);
 }
 
 void FFMedia::play() {

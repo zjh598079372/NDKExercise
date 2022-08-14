@@ -35,7 +35,8 @@ public:
     void analysisStream(AVFormatContext *avFormatContext,
                         Thread_Mode threadMode);
 
-    virtual void privateAnalysisStream(Thread_Mode threadMode) = 0;
+    virtual void privateAnalysisStream(AVFormatContext *avFormatContext,
+                                       Thread_Mode threadMode) = 0;
 
     void publicAnalysisStream(AVFormatContext *avFormatContext,
                               Thread_Mode threadMode);

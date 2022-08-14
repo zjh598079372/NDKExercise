@@ -1,5 +1,7 @@
 package com.example.exercisendk.callNative;
 
+import android.view.Surface;
+
 import com.me.support.utils.LogUtil;
 
 public class NativePlayer {
@@ -65,4 +67,10 @@ public class NativePlayer {
      * 真正的播放
      */
     public native void nPlay();
+
+    /**
+     * 设置播放视频的surface
+     *
+     */
+    public native void nSetSurface(Surface surface);
 }

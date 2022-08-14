@@ -29,13 +29,15 @@ public:
     uint8_t *resampleOutBuffer;
     AVPacket *pPacket = NULL;
     bool isExit = false;
+    double synTime = 0;
 
 public:
     FFAudio(int index, FFJniCallback *ffJniCallback, FFPlayStatus *ffPlayStatus);
 
     ~FFAudio();
 
-    virtual void privateAnalysisStream(Thread_Mode threadMode);
+    virtual void privateAnalysisStream(AVFormatContext *avFormatContext,
+                                       Thread_Mode threadMode);
 
     virtual void play();
 
@@ -44,6 +46,8 @@ public:
     void initCreateOpenSLES();
 
     int resampleAudio();
+
+    double getSynTime();
 
 
 };

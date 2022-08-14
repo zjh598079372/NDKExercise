@@ -24,6 +24,10 @@ void preparedAsync(JNIEnv *env, jobject thiz, jstring url) {
     FFPlayer::Get()->preparedAsync(env, thiz, url);
 }
 
+void setSurface(JNIEnv *env, jobject thiz, jobject surface) {
+    FFPlayer::Get()->setSurface(env, thiz, surface);
+}
+
 void play(JNIEnv *env, jobject thiz) {
     FFPlayer::Get()->play(env, thiz);
 }
@@ -78,4 +82,11 @@ void FFPlayer::release() {
 
 FFPlayer::~FFPlayer(){
     release();
+}
+
+void FFPlayer::setSurface(JNIEnv *pEnv, jobject thiz, jobject surface) {
+    if(fFmpeg && fFmpeg->ffVideo){
+        fFmpeg->ffVideo->setSurface(pEnv,surface);
+    }
+
 }

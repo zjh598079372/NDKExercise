@@ -69,16 +69,14 @@ add_library( # Sets the name of the library.
         player/FFmpeg.h
         player/IPlayerPorxy.cpp
         player/IPlayerPorxy.h
-        player/demux/IDemux.h
-        player/demux/IDemux.cpp
-        player/demux/FFDemux.h
-        player/demux/FFDemux.cpp
         player/videoPlay/FFPlayer.h
         player/videoPlay/FFPlayer.cpp
         player/media/FFMedia.cpp
         player/media/FFMedia.h
         player/audio/FFAudio.cpp
         player/audio/FFAudio.h
+        player/video/FFVideo.cpp
+        player/video/FFVideo.h
         player/queue/PacketQueue.cpp
         player/queue/PacketQueue.h
 
@@ -111,5 +109,6 @@ target_link_libraries(
         avutil
         swresample
         swscale
+        android
         OpenSLES
         ${log-lib})

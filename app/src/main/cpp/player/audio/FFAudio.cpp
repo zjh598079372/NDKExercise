@@ -11,7 +11,8 @@ FFAudio::FFAudio(int index, FFJniCallback *ffJniCallback, FFPlayStatus *ffPlaySt
 }
 
 
-void FFAudio::privateAnalysisStream(Thread_Mode threadMode) {
+void FFAudio::privateAnalysisStream(AVFormatContext *avFormatContext,
+                                    Thread_Mode threadMode) {
     int result = 0;
     /**
      * 音频重采样
@@ -43,7 +44,7 @@ void FFAudio::privateAnalysisStream(Thread_Mode threadMode) {
     XLOGE("FFAudio-->value-->%s,%d", av_err2str(result), result);
 }
 
-void *playThread(void *context) {
+void *playAudioThread(void *context) {
     FFAudio *ffAudio = (FFAudio *) context;
     ffAudio->initCreateOpenSLES();
     return 0;
@@ -53,7 +54,7 @@ void FFAudio::play() {
 
 //1、一个线程去播放
     pthread_t playTid = NULL;
-    pthread_create(&playTid, NULL, playThread, this);
+    pthread_create(&playTid, NULL, playAudioThread, this);
     pthread_detach(playTid);
 
 }
@@ -181,6 +182,7 @@ int FFAudio::resampleAudio() {
 
     while (ffPlayStatus && !ffPlayStatus->isExit) {
         pPacket = packetQueue->pop();
+
         // Packet 包，压缩的数据，解码成 pcm 数据
         int codecSendPacketRes = avcodec_send_packet(avCodecContext, pPacket);
         if (codecSendPacketRes == 0) {
@@ -195,6 +197,11 @@ int FFAudio::resampleAudio() {
                 // size 是多大，装 pcm 的数据
                 // 1s 44100 点  2通道 ，2字节    44100*2*2
                 // 1帧不是一秒，pFrame->nb_samples点
+                double time = av_frame_get_best_effort_timestamp(pFrame)*av_q2d(time_base);
+                if(time > synTime){
+                    synTime = time;
+                }
+                //这里可以做播放进度回调
                 break;
             }
         }
@@ -212,6 +219,10 @@ FFAudio::~FFAudio() {
     FFMedia::~FFMedia();
     release();
 
+}
+
+double FFAudio::getSynTime() {
+    return synTime;
 }
 
 

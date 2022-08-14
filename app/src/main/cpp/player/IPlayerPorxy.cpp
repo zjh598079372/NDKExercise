@@ -5,7 +5,6 @@
 #include <jni.h>
 #include "IPlayerPorxy.h"
 #include "ConstDefine.h"
-#include "demux/FFDemux.h"
 
 
 void IPlayerPorxy::Init(JavaVM *vm, JNIEnv *env) {

@@ -11,6 +11,7 @@
 #include "../include/XLog.h"
 #include "ConstDefine.h"
 #include "audio/FFAudio.h"
+#include "video/FFVideo.h"
 
 extern "C"{
 #include "../include/ffmpeg/libavformat/avformat.h"
@@ -29,6 +30,7 @@ public:
     FFmpeg* pFFmpge = 0;
     FFJniCallback* ffJniCallback = 0;
     FFAudio *ffAudio = 0;
+    FFVideo *ffVideo = NULL;
     FFPlayStatus *ffPlayStatus = NULL;
     AVFormatContext *avFormatContext = 0;
     AVCodecContext *avCodecContext = 0;
@@ -50,6 +52,7 @@ public:
     AVPacket *avPacket = 0;
 
     jobject initAudioTrack(JNIEnv *env);
+
 
 
 };

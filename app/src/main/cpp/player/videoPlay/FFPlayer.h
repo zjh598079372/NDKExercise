@@ -8,10 +8,12 @@
 #include <jni.h>
 #include "../FFJniCallback.h"
 #include "../FFmpeg.h"
+#define XLOGE(...) __android_log_print(ANDROID_LOG_ERROR,"XxPlay",__VA_ARGS__)
 
 JNIEXPORT void JNICALL play(JNIEnv *env, jobject thiz);
 JNIEXPORT void JNICALL prepared(JNIEnv *env, jobject thiz, jstring url);
 JNIEXPORT void JNICALL preparedAsync(JNIEnv *env, jobject thiz, jstring url);
+JNIEXPORT void JNICALL setSurface(JNIEnv *env, jobject thiz, jobject surface);
 class FFPlayer {
 public:
     JavaVM* globalVm = 0;
@@ -33,6 +35,7 @@ public:
     void preparedAsync(JNIEnv *env,jobject thiz, jstring url);
 
 
+    void setSurface(JNIEnv *pEnv, jobject thiz, jobject surface);
 };
 
 

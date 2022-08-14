@@ -30,7 +30,8 @@ static JNINativeMethod bitmapMethods[] = {
 static JNINativeMethod playerMethods[] = {
         {"nPlay", "()V", (void *) play},
         {"nPrepared", "(Ljava/lang/String;)V", (void *) prepared},
-        {"nPreparedAsync", "(Ljava/lang/String;)V", (void *) preparedAsync}
+        {"nPreparedAsync", "(Ljava/lang/String;)V", (void *) preparedAsync},
+        {"nSetSurface", "(Landroid/view/Surface;)V", (void *) setSurface}
 };
 
 /*

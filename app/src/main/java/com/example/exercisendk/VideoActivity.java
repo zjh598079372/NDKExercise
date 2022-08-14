@@ -1,6 +1,7 @@
 package com.example.exercisendk;
 
 import android.os.Bundle;
+import android.view.SurfaceView;
 import android.view.View;
 
 import com.example.exercisendk.base.BaseActivity;
@@ -14,11 +15,13 @@ import com.qw.soul.permission.callbcak.CheckRequestPermissionsListener;
 public class VideoActivity extends BaseActivity {
 
     private static final String TAG = VideoActivity.class.getSimpleName() + "--->";
+    private SurfaceView mSurfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
+        mSurfaceView = findViewById(R.id.surfaceView);
         findViewById(R.id.playBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,6 +50,7 @@ public class VideoActivity extends BaseActivity {
                             public void onPrepared() {
                                 LogUtil.e(TAG + "onPrepared-->");
                                 showLoadingFrame(false);
+                                nativePlayer.nSetSurface(mSurfaceView.getHolder().getSurface());
                                 nativePlayer.nPlay();
                             }
                         });

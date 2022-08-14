@@ -5,11 +5,10 @@
 #ifndef EXERCISENDK_IPLAYERPORXY_H
 #define EXERCISENDK_IPLAYERPORXY_H
 
-
-#include "IPlayer.h"
 #include "FFJniCallback.h"
 #include <string>
 #include "../include/XLog.h"
+#include "IPlayer.h"
 
 
 extern "C"{

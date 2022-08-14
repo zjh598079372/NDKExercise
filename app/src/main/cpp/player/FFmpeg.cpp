@@ -58,6 +58,7 @@ bool FFmpeg::prepare(Thread_Mode threadMode) {
     avformat_network_init();
     int result;
     int audioIndex = 0;
+    int videoIndex = 0;
     result = avformat_open_input(&avFormatContext, url, NULL, NULL);
     XLOGE("result-->value-->%s,%d", av_err2str(result), result);
     if (result) {
@@ -80,6 +81,15 @@ bool FFmpeg::prepare(Thread_Mode threadMode) {
     }
     ffAudio = new FFAudio(audioIndex, ffJniCallback, ffPlayStatus);
     ffAudio->analysisStream(avFormatContext, threadMode);
+
+    videoIndex = av_find_best_stream(avFormatContext, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
+    if (videoIndex < 0) {
+        ffJniCallback->onErrorListener(threadMode, result, av_err2str(result));
+        release();
+        return false;
+    }
+    ffVideo = new FFVideo(videoIndex, ffJniCallback, ffPlayStatus,ffAudio);
+    ffVideo->analysisStream(avFormatContext, threadMode);
     if (ffJniCallback) {
         ffJniCallback->onPerpared(threadMode);
     }
@@ -95,9 +105,12 @@ void *decodeThread(void *context) {
         int result = av_read_frame(fFmpeg->avFormatContext, avPacket);
         if (result >= 0) {
             //成功
+            avPacket->pts = avPacket->pts*(1000*av_q2d(fFmpeg->avFormatContext->streams[avPacket->stream_index]->time_base));
             if (avPacket->stream_index == fFmpeg->ffAudio->index) {
                 fFmpeg->ffAudio->packetQueue->push(avPacket);
-            } else {
+            }else if(avPacket->stream_index == fFmpeg->ffVideo->index){
+                fFmpeg->ffVideo->packetQueue->push(avPacket);
+            }else {
                 //1、下面这个方法做了三件事情
                 // 1.1、解引用数据 data
                 //1.2、销毁结构体内容
@@ -114,12 +127,16 @@ void *decodeThread(void *context) {
 
 void FFmpeg::play() {
     //1、一个线程去解码packet
-    pthread_t decodeAudioTid = NULL;
-    pthread_create(&decodeAudioTid, NULL, decodeThread, this);
-    pthread_detach(decodeAudioTid);
+    pthread_t decodeTid = NULL;
+    pthread_create(&decodeTid, NULL, decodeThread, this);
+    pthread_detach(decodeTid);
 
     if (ffAudio) {
         ffAudio->play();
+    }
+
+    if (ffVideo) {
+        ffVideo->play();
     }
 }
 
@@ -146,6 +163,11 @@ void FFmpeg::release() {
     if (ffAudio) {
         delete ffAudio;
         ffAudio = NULL;
+    }
+
+    if (ffVideo) {
+        delete ffVideo;
+        ffVideo = NULL;
     }
 
     avformat_network_deinit();
