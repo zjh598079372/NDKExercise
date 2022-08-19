@@ -141,6 +141,7 @@ void FFmpeg::play() {
 }
 
 void FFmpeg::release() {
+
     if (avFrame) {
         av_frame_free(&avFrame);
         avFrame = NULL;
@@ -170,6 +171,11 @@ void FFmpeg::release() {
         ffVideo = NULL;
     }
 
+    if(ffPlayStatus) {
+        delete ffPlayStatus;
+        ffPlayStatus = NULL;
+    }
+
     avformat_network_deinit();
 
     if (url) {
@@ -180,7 +186,7 @@ void FFmpeg::release() {
 
 void FFmpeg::exitPlay() {
     if (ffPlayStatus) {
-        ffPlayStatus->isExit = !ffPlayStatus->isExit;
+        ffPlayStatus->isExit = true;
     }
 
 }

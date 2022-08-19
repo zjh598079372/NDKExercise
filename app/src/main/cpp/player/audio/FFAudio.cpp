@@ -87,7 +87,6 @@ void FFAudio::release() {
 void playerCallback(SLAndroidSimpleBufferQueueItf caller, void *pContext) {
     FFAudio *ffAudio = (FFAudio *) pContext;
     int dataSize = ffAudio->resampleAudio();
-    // 这里为什么报错，留在后面再去解决
     (*caller)->Enqueue(caller, ffAudio->resampleOutBuffer, dataSize);
 }
 
@@ -197,11 +196,12 @@ int FFAudio::resampleAudio() {
                 // size 是多大，装 pcm 的数据
                 // 1s 44100 点  2通道 ，2字节    44100*2*2
                 // 1帧不是一秒，pFrame->nb_samples点
-                double time = av_frame_get_best_effort_timestamp(pFrame)*av_q2d(time_base);
-                if(time > synTime){
+                double time = av_frame_get_best_effort_timestamp(pFrame) * av_q2d(time_base);
+                if (time > synTime) {
                     synTime = time;
                 }
                 //这里可以做播放进度回调
+                XLOGE("FFAudio-->duration-->%d,current-->%lf", duration, time);
                 break;
             }
         }

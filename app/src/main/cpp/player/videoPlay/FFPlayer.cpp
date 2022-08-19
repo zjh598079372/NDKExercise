@@ -32,6 +32,10 @@ void play(JNIEnv *env, jobject thiz) {
     FFPlayer::Get()->play(env, thiz);
 }
 
+void release(JNIEnv *env, jobject thiz){
+    FFPlayer::Get()->release(env, thiz);
+}
+
 void FFPlayer::preparedAsync(JNIEnv *env, jobject thiz, jstring url) {
     if(fFmpeg){
         fFmpeg->exitPlay();
@@ -70,6 +74,8 @@ void FFPlayer::play(JNIEnv *env, jobject thiz) {
 void FFPlayer::release() {
 
     if(fFmpeg){
+        fFmpeg->exitPlay();
+        av_usleep(2*1000*100);
         delete fFmpeg;
         fFmpeg = NULL;
     }
@@ -89,4 +95,11 @@ void FFPlayer::setSurface(JNIEnv *pEnv, jobject thiz, jobject surface) {
         fFmpeg->ffVideo->setSurface(pEnv,surface);
     }
 
+}
+
+void FFPlayer::release(JNIEnv *pEnv, jobject thiz) {
+    if(fFmpeg && fFmpeg ->ffPlayStatus){
+        fFmpeg->ffPlayStatus->isExit = true;
+    }
+    release();
 }

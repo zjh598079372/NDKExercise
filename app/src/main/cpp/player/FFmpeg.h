@@ -27,13 +27,14 @@ extern "C"{
 
 class FFmpeg {
 public:
-    FFmpeg* pFFmpge = 0;
-    FFJniCallback* ffJniCallback = 0;
-    FFAudio *ffAudio = 0;
+    FFJniCallback* ffJniCallback = NULL;
+    FFAudio *ffAudio = NULL;
     FFVideo *ffVideo = NULL;
     FFPlayStatus *ffPlayStatus = NULL;
-    AVFormatContext *avFormatContext = 0;
-    AVCodecContext *avCodecContext = 0;
+    AVFormatContext *avFormatContext = NULL;
+    AVCodecContext *avCodecContext = NULL;
+    AVFrame *avFrame = NULL;
+    AVPacket *avPacket = NULL;
     char* url = 0;
 public:
     FFmpeg(FFJniCallback* ffJniCallback,const char* url);
@@ -46,10 +47,6 @@ public:
     void exitPlay();
     void release();
 
-
-    jobject audioTrack = 0;
-    AVFrame *avFrame = 0;
-    AVPacket *avPacket = 0;
 
     jobject initAudioTrack(JNIEnv *env);
 

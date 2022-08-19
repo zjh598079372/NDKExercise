@@ -16,12 +16,14 @@ public class VideoActivity extends BaseActivity {
 
     private static final String TAG = VideoActivity.class.getSimpleName() + "--->";
     private SurfaceView mSurfaceView;
+    private NativePlayer nativePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
         mSurfaceView = findViewById(R.id.surfaceView);
+        nativePlayer = new NativePlayer();
         findViewById(R.id.playBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -31,7 +33,7 @@ public class VideoActivity extends BaseActivity {
                     @Override
                     public void onAllPermissionOk(Permission[] allPermissions) {
                         ///storage/sdcard0/Android/data/com.example.exercisendk/files/xcreen_20180607_225659.mp4
-                        final NativePlayer nativePlayer = new NativePlayer();
+
                         nativePlayer.setmJNICallbackListener(new NativePlayer.JNICallbackListener() {
                             @Override
                             public void onError(int type, String message) {
@@ -56,8 +58,7 @@ public class VideoActivity extends BaseActivity {
                         });
 
                         nativePlayer.nPreparedAsync(getExternalFilesDir("").getAbsolutePath() + "/test.mkv");
-//                        nativePlayer.nPrepared(getExternalFilesDir("").getAbsolutePath() + "/test1.mkv");
-//                        showLoadingFrame(true);
+
                     }
 
                     @Override
@@ -68,5 +69,11 @@ public class VideoActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        nativePlayer.nRelease();
+        super.onDestroy();
     }
 }

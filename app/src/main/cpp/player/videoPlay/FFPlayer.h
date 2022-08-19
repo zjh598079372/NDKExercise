@@ -14,6 +14,7 @@ JNIEXPORT void JNICALL play(JNIEnv *env, jobject thiz);
 JNIEXPORT void JNICALL prepared(JNIEnv *env, jobject thiz, jstring url);
 JNIEXPORT void JNICALL preparedAsync(JNIEnv *env, jobject thiz, jstring url);
 JNIEXPORT void JNICALL setSurface(JNIEnv *env, jobject thiz, jobject surface);
+JNIEXPORT void JNICALL release(JNIEnv *env, jobject thiz);
 class FFPlayer {
 public:
     JavaVM* globalVm = 0;
@@ -36,6 +37,8 @@ public:
 
 
     void setSurface(JNIEnv *pEnv, jobject thiz, jobject surface);
+
+    void release(JNIEnv *pEnv, jobject thiz);
 };
 
 

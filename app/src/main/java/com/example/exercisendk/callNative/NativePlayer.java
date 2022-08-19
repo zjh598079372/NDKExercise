@@ -73,4 +73,10 @@ public class NativePlayer {
      *
      */
     public native void nSetSurface(Surface surface);
+
+    /**
+     * 释放播放资源
+     */
+
+    public native void nRelease();
 }
