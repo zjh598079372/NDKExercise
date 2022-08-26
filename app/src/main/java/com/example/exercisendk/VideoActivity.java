@@ -57,7 +57,9 @@ public class VideoActivity extends BaseActivity {
                             }
                         });
 
-                        nativePlayer.nPreparedAsync(getExternalFilesDir("").getAbsolutePath() + "/test.mkv");
+//                        nativePlayer.nPreparedAsync(getExternalFilesDir("").getAbsolutePath() + "/test.mkv");
+                        nativePlayer.nPreparedAsync("rtmp://192.168.1.165/myapp/stream");
+//                        nativePlayer.nPreparedAsync("rtmp://127.0.0.1:1935/myapp/stream");
 
                     }
 

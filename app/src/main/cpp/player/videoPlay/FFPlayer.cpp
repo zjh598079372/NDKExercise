@@ -48,6 +48,7 @@ void FFPlayer::preparedAsync(JNIEnv *env, jobject thiz, jstring url) {
             const char *path = env->GetStringUTFChars(url, NULL);
             fFmpeg = new FFmpeg(ffJniCallback,path);
             fFmpeg->prepareAsync();
+            env->ReleaseStringUTFChars(url,path);
         }
     }
 

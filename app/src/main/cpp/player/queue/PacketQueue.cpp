@@ -40,7 +40,7 @@ AVPacket* PacketQueue::pop() {
 }
 
 void PacketQueue::clear() {
-    while (avPacketQueue->size() > 0){
+    while (!avPacketQueue->empty()){
         AVPacket* avPacket = avPacketQueue->front();
         avPacketQueue->pop();
         av_packet_free(&avPacket);

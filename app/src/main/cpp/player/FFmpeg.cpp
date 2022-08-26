@@ -59,6 +59,8 @@ bool FFmpeg::prepare(Thread_Mode threadMode) {
     int result;
     int audioIndex = 0;
     int videoIndex = 0;
+    AVDictionary *opts = 0;
+    av_dict_set(&opts, "rw_timeout", "3000000", 0);
     result = avformat_open_input(&avFormatContext, url, NULL, NULL);
     XLOGE("result-->value-->%s,%d", av_err2str(result), result);
     if (result) {
